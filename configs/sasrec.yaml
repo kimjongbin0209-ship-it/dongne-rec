@@ -1,0 +1,15 @@
+model:
+  max_len: 100        # 0일차 EDA: 유저당 체크인 median 103(NYC)·131(TKY)
+  hidden: 64
+  n_blocks: 2
+  n_heads: 1
+  dropout: 0.3
+
+train:
+  windows: all        # all: 긴 시퀀스를 max_len 단위로 잘라 모든 위치 학습 / last: 원 논문처럼 유저당 마지막 창만
+  lr: 0.001
+  batch_size: 128
+  epochs: 200
+  eval_every: 5       # valid E1~E4 평가 주기 (epoch)
+  patience: 4         # 주 지표가 연속 4회(=20 epoch) 안 오르면 중단
+  device: auto        # auto(mps 있으면 mps) | mps | cpu

@@ -5,6 +5,7 @@ __pycache__/
 .DS_Store
 
 data/
+*.pt
 
 # 개인 지원 계획 문서
 당근 ML 지원용 미니 프로젝트 플랜.pdf
