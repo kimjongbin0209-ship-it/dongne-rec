@@ -26,7 +26,7 @@ from dongne_rec.data.split import Split, load_split
 from dongne_rec.eval import report
 from dongne_rec.eval.protocols import PROTOCOLS, evaluate, load_or_sample_candidates
 from dongne_rec.models.sasrec import SASRec, SASRecScorer, pad_left
-from dongne_rec.train.samplers import SAMPLER_IDS, NegativeSampler, RandomSampler, user_item_matrix
+from dongne_rec.train.samplers import SAMPLER_IDS, GeoSampler, MixedSampler, NegativeSampler, RandomSampler, user_item_matrix
 
 
 def make_windows(train: list[np.ndarray], max_len: int, all_windows: bool) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -52,6 +52,10 @@ def make_sampler(name: str, split: Split, geo: GeoIndex, rng: np.random.Generato
     user_items = user_item_matrix(split.train, split.n_items)
     if name == "random":
         return RandomSampler(split.n_items, user_items, rng)
+    if name == "geo":
+        return GeoSampler(split.n_items, user_items, rng, geo.indptr, geo.indices)
+    if name == "mixed":
+        return MixedSampler(split.n_items, user_items, rng, geo.indptr, geo.indices, geo_ratio=tcfg["geo_ratio"])
     raise ValueError(f"알 수 없는 sampler: {name}")
 
 

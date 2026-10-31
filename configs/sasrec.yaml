@@ -1,12 +1,13 @@
 model:
   max_len: 100        # 0일차 EDA: 유저당 체크인 median 103(NYC)·131(TKY)
-  hidden: 64
+  hidden: 256         # 2일차 튜닝 (NYC valid E4 NDCG@10, S0 seed 0): 64→0.171, 128→0.181, 256→0.189
   n_blocks: 2
   n_heads: 1
-  dropout: 0.3
+  dropout: 0.3        # hidden 256에서 0.5는 0.186으로 더 낮음 (results/tuning/)
 
 train:
-  windows: all        # all: 긴 시퀀스를 max_len 단위로 잘라 모든 위치 학습 / last: 원 논문처럼 유저당 마지막 창만
+  geo_ratio: 0.5      # S2 mixed에서 위치마다 geo negative를 쓸 확률 α
+  windows: all       # all: 긴 시퀀스를 max_len 단위로 잘라 모든 위치 학습 / last: 원 논문처럼 유저당 마지막 창만
   lr: 0.001
   batch_size: 128
   epochs: 200

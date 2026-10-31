@@ -1,7 +1,7 @@
 {
   "model": {
     "max_len": 100,
-    "hidden": 64,
+    "hidden": 256,
     "n_blocks": 2,
     "n_heads": 1,
     "dropout": 0.3
