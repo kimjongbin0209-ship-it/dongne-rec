@@ -4,7 +4,9 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 
-data/
+# 루트의 원본·전처리 데이터만 (src/dongne_rec/data/ 패키지는 추적해야 해서 앞에 / 를 붙임)
+/data/
+/artifacts/
 *.pt
 
 # 개인 지원 계획 문서
