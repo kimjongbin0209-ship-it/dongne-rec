@@ -16,10 +16,16 @@ dependencies = [
     "matplotlib",
     "pyyaml",
     "torch",
+    "faiss-cpu",
+    "onnx",
+    "onnxruntime",
+    "onnxscript",
+    "fastapi",
+    "uvicorn",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = ["pytest", "httpx"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

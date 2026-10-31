@@ -23,8 +23,11 @@
 ### 최종적으로 README가 말해야 하는 3가지 주장
 
 1. **"전역 랜덤 후보로 평가하면 성능이 X배 부풀려지고, 모델 순위까지 바뀐다."** (H2)
+   → 3일차 기준: SASRec-S0의 E1 ÷ E4 = 3.5(NYC)~4.0(TKY)배, E1로 고르면 S0이 SASRec 중 1등인데 E4에선 꼴찌, 전체 1등은 E1의 SASRec-S0 → E4의 PersonalFreq, Kendall τ(E1, E4) 0.49~0.59
 2. **"학습 negative를 동네 안에서 뽑으면 동네 기준 지표가 Y% 오른다 (그리고 이런 trade-off가 있다)."** (H1)
+   → 3일차 기준: E4 +1.7~3.5% (TKY 유의, NYC 방향만), 이득은 재방문에서·신규는 소폭 하락(false negative), 전체 랭킹 손실은 혼합 샘플링으로 완화
 3. **"2단계 서빙으로 p99 Z ms, int8 양자화 시 정확도 −a% / 속도 +b%."** (서빙)
+   → 4일차 기준: E2E p99 1.0ms (ONNX int8), int8은 크기 −74%·정확도 손실 없음·속도 +4%. 후보 축소(1-b)는 이 규모에선 정답 보존율 −30%로 손해이고, 반경 안 후보 10만 개 이상에서 필요해져요
 
 X, Y, Z, a, b를 채우는 게 이 프로젝트의 전부예요. 아래 모든 스펙은 이 숫자를 정직하게 만들기 위한 장치예요.
 
@@ -70,6 +73,76 @@ TKY도 순위와 경향이 같아요 (PersonalFreq E4 0.237, ItemKNN 0.199).
 3. **H2 결과는 예상보다 미묘해요.** E1 ÷ E2 부풀림은 1.9~3.0배지만, 정답이 동네 안인 쿼리만 보면 지리를 안 쓰는 모델(MostPop, PersonalFreq, ItemKNN)은 E1 ≈ E2 (비율 0.97~1.03)예요. 즉 부풀림의 대부분은 ① 반경 밖 정답과 ② 이력 제외 negative(PersonalFreq E1 0.71 vs E3 0.36)에서 오고, **negative의 지리적 난이도 효과는 지리를 아는 모델(GeoPop 2.7배)에서만** 나타나요. SASRec은 공동 방문으로 위치를 암묵적으로 배우므로 어느 쪽인지가 2~3일차의 관전 포인트예요.
 4. **E2 정의를 고쳤어요.** 처음 정의에서는 정답이 반경 밖이어도 정답으로 인정했어요. 그러면 negative가 전부 가까운 곳이라 "유일하게 먼 후보 = 정답"이라는 지름길이 생겨요. 지금은 E4처럼 miss로 처리해요 (§3.2).
 5. NYC는 test 쿼리의 22%가 반경 안 후보 100개를 못 채워 가까운 순으로 채워요 (TKY 6%). 그 결과 E2에서 GeoPop이 MostPop보다 약간 높아요 (0.099 vs 0.086). 이건 버그가 아니라 채운 후보가 반경 밖이라서 생기는 차이예요.
+
+### 2일차 결과 (2026-10-31) — SASRec-S0 (random negative), 시드 3개 평균 ± 표준편차
+
+상세: `results/summary/{NYC,TKY}/R3/table2.md` (`make compare`), 튜닝 기록: `results/tuning/sasrec/NYC/R3/`
+
+| test NDCG@10 | E1 Global-sampled | E2 Geo-sampled | E3 Full | E4 Geo-full ★ | E4 신규 정답 |
+|---|---|---|---|---|---|
+| NYC PersonalFreq | 0.713 | **0.371** | **0.363** | **0.239** | 0.012 |
+| NYC SASRec-S0 | **0.753 ± 0.004** | 0.370 ± 0.006 | 0.329 ± 0.005 | 0.217 ± 0.004 | 0.019 ± 0.002 |
+| TKY PersonalFreq | 0.796 | **0.378** | **0.372** | **0.237** | 0.010 |
+| TKY SASRec-S0 | **0.828 ± 0.001** | 0.376 ± 0.005 | 0.296 ± 0.002 | 0.208 ± 0.001 | **0.041 ± 0.002** |
+
+여기서 나온 사실과 결정:
+
+1. **H2의 핵심 증거가 나왔어요: 평가 방식에 따라 1등이 바뀌어요.** 표준 평가(E1)에선 SASRec이 1등인데, 전체 랭킹(E3)과 동네 랭킹(E4)에선 PersonalFreq가 1등이에요. 두 도시 모두 같고 시드 간 표준편차보다 차이가 훨씬 커요. README 주장 1의 중심 문장이에요.
+2. **SASRec은 재방문에선 PersonalFreq에, 신규에선 (NYC 한정) 동네 인기순에 져요.** E4 신규 NYC 0.019 vs GeoPop 0.023, TKY는 SASRec이 0.041로 1등. 체크인이 2.8배 많은 TKY에서만 신규 장소 추천이 살아나요.
+3. **SASRec은 위치를 암묵적으로 조금 배웠어요.** 정답이 동네 안인 쿼리만 보면 E1 ÷ E2가 1.05(NYC)·1.11(TKY)로, 지리를 안 쓰는 베이스라인(≈1.0)과 GeoPop(2.2~2.7) 사이예요. 동네 안 구분력이 아직 약하다는 뜻이라, **H1(동네 negative)이 노릴 여지가 바로 여기**예요.
+4. **하이퍼파라미터는 `hidden 256, dropout 0.3`으로 확정했어요.** NYC valid E4 NDCG@10, S0 seed 0 기준: hidden 64→0.171, 128→0.181, 256→0.189. dropout은 ±0.002 수준이었고, 원 논문식 "마지막 창만 학습"도 0.173으로 차이 없어서 모든 창 학습을 유지했어요. TKY에도 같은 설정을 쓰고, **S1/S2도 이 설정 그대로 비교**해요 (샘플러만 바꾸는 공정 비교).
+5. 학습 비용: MPS에서 NYC 1회 35~55초, TKY 1회 2~3분. 3일차 9회 × 2도시도 30분 안쪽이에요.
+
+### 3일차 결과 (2026-10-31) — H1: 동네 negative 샘플링, 시드 3개
+
+상세: `results/summary/{NYC,TKY}/R3/table2.md`, 그림: 같은 폴더의 `fig_protocol_ranks.png`(H2), `fig_sampler_effects.png`(H1)
+
+| test NDCG@10 | E1 Global-sampled | E3 Full | E4 Geo-full ★ | E4 재방문 | E4 신규 |
+|---|---|---|---|---|---|
+| NYC S0 random | **0.753** | 0.329 | 0.217 | 0.320 | **0.019** |
+| NYC S1 geo | 0.703 | 0.297 | 0.221 | **0.327** | 0.017 |
+| NYC S2 mixed (α=0.5) | 0.729 | **0.331** | **0.221** | **0.327** | 0.018 |
+| TKY S0 random | **0.828** | **0.296** | 0.208 | 0.273 | **0.041** |
+| TKY S1 geo | 0.756 | 0.213 | **0.215** | **0.284** | 0.038 |
+| TKY S2 mixed (α=0.5) | 0.794 | 0.274 | 0.213 | 0.281 | 0.039 |
+
+S0 대비 E4 변화 (쿼리 단위 paired bootstrap 2,000회, 95% CI): TKY S1 **+3.5% [+1.3, +5.7], p<0.001**, TKY S2 **+2.6% [+0.6, +4.8], p=0.011**, NYC S1 +1.7% [−0.8, +4.3], p=0.19, NYC S2 +1.9% [−0.3, +4.2], p=0.11
+
+여기서 나온 사실과 결정:
+
+1. **H1은 부분적으로 지지돼요.** 동네 negative는 두 도시 모두 E4를 올리지만(+1.7~3.5%), 통계적으로 유의한 건 TKY뿐이에요. NYC는 방향만 같아요. 대가로 전체 랭킹(E3)이 떨어져요 (S1: NYC −9.7%, TKY −28%). **혼합(S2)이 이 손실을 줄여요** (NYC +0.7% 유의하지 않음, TKY −7.3%) → 실전 선택지는 S2예요.
+2. **이득은 재방문에서 나오고, 신규 장소는 오히려 소폭 떨어져요 — 처음 예상과 반대예요.** E4 재방문 +2.2%(NYC, 유의하지 않음)·+4.2%(TKY, p<0.001), E4 신규 −9~−13%(유의하지 않음). 해석: 동네 negative는 "가까운 곳들 중 이 유저가 실제로 가는 곳"(생활 반경 루틴)을 구분하게 만들지만, 아직 안 가 본 동네 장소, 즉 신규 정답이 나올 바로 그 후보들을 negative로 밀어내요. §5.2에서 걱정한 **false negative 효과**가 신규 구간에서 나타난 거예요.
+3. **H1 × H2: 표준 평가로 모델을 고르면 동네 서비스에 가장 나쁜 SASRec을 골라요.** E1에선 S0이 SASRec 중 1등인데, E4에선 두 도시 모두 SASRec 중 꼴찌예요. E1 순위와 E4 순위의 Kendall τ = 0.59(NYC)·0.49(TKY). README의 헤드라인이에요.
+4. **E4 전체 1등은 여전히 PersonalFreq예요** (SASRec 대비 +7~12%, 모두 p<0.001). 반대로 신규 장소에선 SASRec이 PersonalFreq를 크게 이겨요 (TKY +280~320%, NYC +35~56%). → "재방문은 PersonalFreq, 신규는 SASRec" **혼합 모델**이 자연스러운 다음 실험이에요 (선택).
+5. 샘플러 진단 (학습 위치 기준): random negative는 3km 안 8~14%, 중앙 거리 10~11km인데, 실제 다음 장소는 3km 안 57~59%, 중앙 1.9km예요. geo negative는 3km 안 98~99.6%, 중앙 1.9km로 **거리 단서를 지워요.** 정답·이력과 겹친 negative 0건.
+
+### 4일차 결과 (2026-10-31) — 경량 서빙, NYC SASRec-S2 (mixed) seed 0
+
+상세: `results/serving/NYC/R3/mixed_s0/bench.md` (`make export bench`), 프로세스 내·batch=1·test 요청 1,083건, Apple Silicon MacBook
+
+| 인코더 (2단계 구성) | 인코더 크기 | Stage 2 p50 / p99 | E2E p50 / p99 | NDCG@10 |
+|---|---|---|---|---|
+| PyTorch CPU, 1스레드 | 13.3MB | 0.69 / 1.18ms | 0.90 / 1.83ms | 0.2182 |
+| PyTorch MPS | 13.3MB | 1.02 / 1.53ms | 1.26 / 2.20ms | 0.2182 |
+| ONNX fp32, 기본 스레드 | 13.4MB | 0.49 / 0.67ms | 0.77 / 1.22ms | 0.2182 |
+| **ONNX int8, 기본 스레드** | **3.5MB** | **0.47 / 0.53ms** | **0.73 / 1.01ms** | **0.2186** |
+
+| 파이프라인 구성 (ONNX fp32, 1스레드) | 재랭킹 후보 | 정답이 후보에 남은 비율 | E2E p50 | NDCG@10 | 오프라인 |
+|---|---|---|---|---|---|
+| 2단계: 지리 필터 → FAISS 200개 → 재랭킹 | 200 | 34.8% | 1.05ms | 0.2182 | E4 0.2209 |
+| 지리 필터 → 반경 안 전체 재랭킹 (1-b 생략) | 1,208 | 49.9% | 0.99ms | 0.2218 | E4 0.2209 |
+| 지리 필터 없음, 전체 카탈로그 | 9,785 | 100% | 1.78ms | 0.3322 | E3 0.3322 |
+
+여기서 나온 사실과 결정:
+
+1. **서빙 경로가 오프라인 평가와 일치해요.** 전체 카탈로그 재랭킹은 오프라인 E3과 소수점 넷째 자리까지 같고(0.3322), 1-b 생략 구성은 E4와 0.0009 차이예요. 이 차이는 반경 안 장소가 10개 미만이라 반경을 넓힌 0.3% 요청에서 와요.
+2. **int8 양자화: 크기 −74%, 정확도 손실 없음, 속도 이득은 거의 없음 (Stage 2 −4%).** 예상대로예요. 인코더 연산이 작아서(hidden 256, 2블록, 길이 100) 실행 시 활성값 양자화 비용이 MatMul 절약분과 비슷해요. 대신 메모리·배포 크기 이득은 커요. 1스레드에선 fp32와 int8 둘 다 0.8ms로 같아요.
+3. **batch=1에선 MPS(GPU)가 CPU보다 느려요** (Stage 2 1.02ms vs 0.69ms). 디스패치 오버헤드 때문이에요. 학습(배치 128)에선 MPS가 4배 빨랐던 것과 대비돼요.
+4. **이 규모에선 Stage 1-b(FAISS 후보 축소)가 손해예요.** 반경 안 1,208개를 200개로 줄이면, 정답이 후보에 남는 비율이 49.9%→34.8%로 떨어져서 도달 가능한 정답의 30%를 잃어요. 그런데 지연은 똑같아요. 쿼리(최근 3개 장소 임베딩 평균)가 SASRec 표현보다 약한 탓이에요. 다만 NDCG 손실은 −1.6%로 작아요. 잃는 정답이 원래 순위가 낮은 것들이라서요. N을 1000으로 늘리면 41.6%, NDCG 0.2197이에요.
+5. **1-b가 필요해지는 지점: 반경 안 후보가 10만 개를 넘을 때예요.** 합성 임베딩으로 재보니 후보 전체 점수 계산이 1만 개는 0.05ms, 10만 개는 0.84ms, 100만 개는 12.6ms예요. 반면 FAISS IVF 상위 200은 100만 개에서도 0.16ms예요. 매물 수백만 개에 동네 범위가 넓은 실서비스라면 1-b가 필요하고, 그때는 쿼리를 "최근 임베딩 평균"이 아니라 **미리 계산해 둔 유저 벡터**(이전 요청의 SASRec h)로 바꾸는 게 첫 번째 개선점이에요.
+6. **macOS에선 PyTorch와 FAISS를 한 프로세스에 올리면 OpenMP 런타임이 충돌해요** (OMP Error #15 / segfault, FAISS IVF 학습에서 재현). 서빙 경로(`serving/pipeline.py`, `api.py`)는 torch를 import하지 않도록 분리했어요 (`pad_left` → `data/sequences.py`). 벤치는 구성마다 새 프로세스에서 재요. 운영에서도 학습 프로세스와 서빙 프로세스를 나누는 근거로 쓸 수 있어요.
+7. **ONNX 변환은 새 exporter(`dynamo=True`)로 했어요.** 예전 TorchScript exporter는 ONNX Runtime이 bool `EyeLike`를 지원하지 않아 실행에 실패했어요. fp32 변환 오차는 6.6e-6이에요.
+8. API: `POST /recommend` (FastAPI, ONNX int8 + FAISS, torch 없음). ASGI 테스트 클라이언트 기준 p50 2.3ms / p99 3.2ms예요 (JSON 검증·직렬화 포함, 추천 계산은 약 0.5ms). 실제 네트워크 HTTP 부하 테스트는 하지 않았어요.
 
 ---
 
@@ -190,9 +263,9 @@ TKY도 순위와 경향이 같아요 (PersonalFreq E4 0.237, ItemKNN 0.199).
 | 하이퍼파라미터 | 기본값 | 비고 |
 |---|---|---|
 | `max_len` | 100 | 0일차 EDA: 유저당 체크인 median 103(NYC)·131(TKY), 97% 이상이 50 초과. 원 SASRec은 유저당 마지막 `max_len`개만 학습하므로, 그래도 짧으면 슬라이딩 윈도로 학습 샘플을 늘리기 |
-| `hidden` | 64 | |
+| `hidden` | **256** | 2일차 튜닝: 64 / 128 / 256 중 valid 최고 (0.171 / 0.181 / 0.189) |
 | `n_blocks` / `n_heads` | 2 / 1 | |
-| `dropout` | 0.3 | 희소 데이터라 0.2~0.5 탐색 |
+| `dropout` | 0.3 | 2일차 튜닝: 0.2 / 0.5와 차이 ±0.002, hidden 256에선 0.5가 더 낮음 |
 | `lr` / `batch` | 1e-3 / 128 | Adam |
 | `epochs` | 최대 200, 5 epoch마다 valid 평가 | |
 | early stopping | valid **E4 NDCG@10**, patience 4회(=20 epoch) | 모든 변형에 동일 기준 |
@@ -331,10 +404,11 @@ dongne-rec/
 │   ├── analysis/  eda.py                                  ← 0일차 ✅
 │   ├── data/      preprocess.py ✅, geo.py ✅ (haversine, BallTree, CSR 이웃, GeoIndex), split.py ✅
 │   ├── baselines/ pop.py ✅ (MostPop, GeoPop, PersonalFreq), itemknn.py ✅, run.py ✅  ← 1일차
-│   ├── models/    sasrec.py
-│   ├── train/     samplers.py, trainer.py
-│   ├── eval/      protocols.py ✅ (E1~E4 후보 생성·평가), metrics.py ✅, report.py ✅
-│   └── serving/   candidates.py, rerank.py, export_onnx.py, quantize.py, api.py, bench.py
+│   ├── models/    sasrec.py ✅                              ← 2일차
+│   ├── train/     samplers.py ✅ (S0·S1·S2) ← 3일차, trainer.py ✅ (--set/--tag 튜닝)
+│   ├── eval/      protocols.py ✅ (E1~E4 후보 생성·평가), metrics.py ✅, report.py ✅, compare.py ✅ (표 2·3, bootstrap),
+│   │              stats.py ✅ (paired bootstrap), figures.py ✅ (순위 bump chart, 효과 forest plot)
+│   └── serving/   export_onnx.py ✅ (ONNX fp32·int8), pipeline.py ✅ (2단계, torch 없음), bench.py ✅, api.py ✅  ← 4일차
 ├── tests/
 │   ├── test_preprocess.py ✅  # 시간 파싱, 연속 중복, k-core 재수렴, ID/좌표/카테고리
 │   ├── test_geo.py ✅         # haversine, 이웃 CSR = brute-force
@@ -343,7 +417,11 @@ dongne-rec/
 │   ├── test_metrics.py ✅     # 손계산 예제 + 동점 기댓값 = 무작위 추첨 시뮬레이션
 │   ├── test_protocols.py ✅   # negative 제외 규칙, 반경 채우기, 현재 장소 제외, 반경 밖 miss
 │   ├── test_baselines.py ✅   # 각 베이스라인 순서, E4에서 GeoPop = MostPop
-│   └── test_samplers.py       # geo sampler가 반경 내만 뽑는지
+│   ├── test_sasrec.py ✅      # 왼쪽 패딩, 학습 창, causal/padding 마스크, toy 데이터 학습
+│   ├── test_trainer.py ✅     # config 덮어쓰기, 튜닝 실행 경로 분리
+│   ├── test_samplers.py ✅    # S0 패딩·재샘플 비율, S1 반경 내 추출·전역 대체, S2 비율
+│   ├── test_stats.py ✅       # paired bootstrap (차이 0, 명확한 개선, 쿼리 난이도 상쇄)
+│   └── test_serving.py ✅     # 반경·현재 장소 제외, 후보 축소, 반경 확장, FAISS=numpy (torch 없는 별도 프로세스), ONNX 변환, API
 └── results/                   # 실험별 JSONL (config 해시 포함), 표, 그림
 ```
 
@@ -360,9 +438,9 @@ dongne-rec/
 |---|---|---|---|
 | **10/31(토)** | 0일차 준비 ✅ | 환경 세팅, 데이터 다운로드, 전처리, EDA | 표 1 초안, **R = 3km 확정**, 거리 CDF 그림 |
 | **11/1(일)** | 1일차 ✅ (10/31에 앞당겨 완료) | 분할, E1~E4 평가 하네스, 베이스라인 4종, 분할·지표 테스트 | 표 2의 베이스라인 행 채움, `pytest` 통과 (25개) |
-| **11/2(월)** | 2일차 | SASRec 구현, S0 학습, 베이스라인 대비 sanity check | S0이 E3에서 MostPop보다 높음 (아니면 버그부터 의심), PersonalFreq와의 차이와 신규 정답 구간 확인 |
-| **11/3(화)** | 3일차 | S1/S2 sampler, 9회 학습, 표 2·3, 그림 2, bootstrap | 표 2 완성 → **MVP 컷라인** |
-| **11/4(수)** | 4일차 | ONNX 변환, int8, 2단계 파이프라인, FastAPI, 벤치 | 표 4 완성, Stage 1 recall@N |
+| **11/2(월)** | 2일차 ✅ (10/31에 앞당겨 완료) | SASRec 구현, S0 학습, 베이스라인 대비 sanity check | S0 E3 0.329 ≫ MostPop 0.027 ✅, PersonalFreq와의 차이·신규 구간 확인 ✅, 하이퍼파라미터 튜닝 ✅ |
+| **11/3(화)** | 3일차 ✅ (10/31에 앞당겨 완료) | S1/S2 sampler, 9회 학습, 표 2·3, 그림 2, bootstrap | 표 2 완성 → **MVP 컷라인 도달** (반경 민감도·α 스윕·혼합 모델은 선택으로 남김) |
+| **11/4(수)** | 4일차 ✅ (10/31에 앞당겨 완료) | ONNX 변환, int8, 2단계 파이프라인, FastAPI, 벤치 | 표 4·5 완성, Stage 1 recall@N, N 스윕, 카탈로그 확장 비용 |
 | **11/5(목)** | 5일차 | README 작성, A/B 단락, 그림 정리, 레포 공개 | 처음 보는 사람이 README만 읽고 3가지 주장을 이해 |
 | **11/6(금)** | 제출 | 최종 검토 후 지원 | — |
 
@@ -376,11 +454,12 @@ dongne-rec/
 |---|---|---|
 | SASRec이 ItemKNN/GeoPop을 못 이김 | 2일차 표 | 데이터 규모 한계일 수 있음. 숨기지 말고 "작은 데이터에선 단순 모델이 강하다"를 발견으로 리포트, dropout↑·hidden↓ 시도 |
 | SASRec이 PersonalFreq(재방문)를 못 넘음 | 2일차 표 (1일차 기준 E4 0.239) | 재방문 / 신규 구간을 분리해서 SASRec이 신규 구간에서 이기는지로 판단. 시간 되면 "재방문은 PersonalFreq, 신규는 SASRec" 혼합을 대조군으로 |
-| H1 효과가 없거나 반대 | 3일차 표 | false negative 해석 + S2 mixed 결과로 trade-off 서술. 가설이 기각돼도 근거가 탄탄하면 좋은 결과 |
+| H1 효과가 없거나 반대 | 3일차 표 → **부분 발생**: E4는 오르지만 신규 구간은 소폭 하락, NYC는 유의하지 않음 | false negative 해석 + S2 mixed 결과로 trade-off 서술 (3일차 결과 2번). 가설이 기각돼도 근거가 탄탄하면 좋은 결과 |
 | 5-core 후 데이터가 너무 작음 | 0일차 | 아이템 ≥ 3으로 완화, 또는 Tokyo로 교체 |
 | Manhattan에서 반경 내 장소가 너무 많아 메모리 부족 | 0일차 이웃 수 히스토그램 | CSR int32 사용, 그래도 크면 R 축소 또는 격자 셀 근사 |
 | MPS 미지원 연산 / 느림 | 2일차 첫 학습 | fallback env 설정, CPU 학습으로 전환 (수 분 규모라 문제없음) |
-| ONNX 변환 실패 | 4일차 | 어텐션 직접 구현으로 사전 회피, 그래도 막히면 TorchScript로 대체하고 표에 명시 |
+| ONNX 변환 실패 | 4일차 → **부분 발생**: 예전 exporter가 `EyeLike` 미지원 | 새 exporter(`dynamo=True`)로 해결, 오차 6.6e-6 |
+| PyTorch·FAISS OpenMP 충돌 (macOS) | 4일차 벤치 segfault | 서빙 경로에서 torch 제거, 벤치는 구성별 별도 프로세스 |
 | 시간 초과 | 매일 저녁 DoD 체크 | MVP 컷라인 적용, 선택 확장은 제출 후로 |
 
 ---

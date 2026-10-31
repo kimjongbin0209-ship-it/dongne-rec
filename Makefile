@@ -9,7 +9,7 @@ R ?=
 # .venv 안 파일에 macOS hidden 플래그가 붙으면 Python이 editable 설치의 .pth를 무시해서 src를 직접 넣어요.
 export PYTHONPATH := src$(if $(PYTHONPATH),:$(PYTHONPATH))
 
-.PHONY: setup data eda geo baselines train compare test
+.PHONY: setup data eda geo baselines train compare export bench serve test
 
 setup:
 	python3 -m venv .venv
@@ -39,6 +39,22 @@ train:
 # 베이스라인 + SASRec 전체 비교 → results/summary/$(CITY)/R{r}/table2.md
 compare:
 	$(PY) -m dongne_rec.eval.compare --config $(CONFIG) --eval-config $(EVAL_CONFIG) --city $(CITY) $(if $(R),--radius-km $(R))
+
+# 서빙 (configs/serving.yaml의 model.sampler/seed 체크포인트)
+SERVING_CONFIG ?= configs/serving.yaml
+ARTIFACTS ?= artifacts/$(CITY)/R3/mixed_s0
+BACKEND ?= onnx-int8
+
+# → artifacts/$(CITY)/R{r}/{sampler}_s{seed}/ (ONNX fp32·int8, 아이템 임베딩, 장소 메타)
+export:
+	$(PY) -m dongne_rec.serving.export_onnx --config $(CONFIG) --eval-config $(EVAL_CONFIG) --serving-config $(SERVING_CONFIG) --city $(CITY)
+
+# → results/serving/$(CITY)/R{r}/{sampler}_s{seed}/bench.md
+bench:
+	$(PY) -m dongne_rec.serving.bench --config $(CONFIG) --eval-config $(EVAL_CONFIG) --serving-config $(SERVING_CONFIG) --city $(CITY)
+
+serve:
+	DONGNE_ARTIFACTS=$(ARTIFACTS) DONGNE_BACKEND=$(BACKEND) $(PY) -m uvicorn dongne_rec.serving.api:create_app --factory --port 8000
 
 test:
 	$(PY) -m pytest -q

@@ -12,6 +12,8 @@ import numpy as np
 import torch
 from torch import nn
 
+from dongne_rec.data.sequences import pad_left  # noqa: F401  (기존 import 경로 유지)
+
 
 def attention_mask(seq: torch.Tensor) -> torch.Tensor:
     """(B, L) → (B, 1, L, L) bool, True = query i가 key j를 볼 수 있음.
@@ -23,16 +25,6 @@ def attention_mask(seq: torch.Tensor) -> torch.Tensor:
     causal = torch.ones(length, length, dtype=torch.bool, device=seq.device).tril()
     eye = torch.eye(length, dtype=torch.bool, device=seq.device)
     return (causal & ((seq > 0).unsqueeze(1) | eye)).unsqueeze(1)
-
-
-def pad_left(seqs: list[np.ndarray], max_len: int) -> np.ndarray:
-    """시퀀스마다 최근 max_len개를 오른쪽 정렬, 앞은 0(padding)."""
-    out = np.zeros((len(seqs), max_len), dtype=np.int64)
-    for b, s in enumerate(seqs):
-        s = s[-max_len:]
-        if len(s):
-            out[b, -len(s):] = s
-    return out
 
 
 class CausalSelfAttention(nn.Module):
