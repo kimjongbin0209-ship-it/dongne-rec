@@ -1,0 +1,15 @@
+city: NYC                      # NYC | TKY
+raw_dir: data/raw              # dataset_TSMC2014_{city}.csv (Kaggle)
+processed_dir: data/processed
+eda_dir: results/eda
+
+min_user_checkins: 5
+min_item_checkins: 5
+collapse_consecutive_duplicates: true
+
+geo:
+  radius_km: 3                              # 주 반경 (make eda 결정 결과, results/eda/{city}/eda_report.md)
+  sensitivity_radii_km: [2, 5]              # 민감도 분석용
+  candidate_radii_km: [0.5, 1, 2, 3, 5, 10] # EDA에서 coverage를 볼 반경
+  radius_choices_km: [1, 2, 3, 5]           # 주 반경 후보
+  max_pool_share: 0.15                      # 결정 규칙: 동네 후보 풀(median)이 카탈로그의 이 비율 이하인 후보 중 coverage 최대

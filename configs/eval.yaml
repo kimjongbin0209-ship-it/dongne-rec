@@ -1,0 +1,15 @@
+n_sampled_negatives: 100     # E1/E2 negative 수
+seed: 0                      # E1/E2 후보 샘플링 시드 (모든 모델이 같은 후보 사용)
+ks: [10]
+batch_size: 256
+primary:                     # 튜닝·early stopping 기준
+  protocol: E4
+  metric: ndcg@10
+results_dir: results
+
+itemknn:
+  topk_neighbors: 100
+  grid:
+    last_n: [1, 5, null]     # null = 전체 이력
+    decay: [0.5, 0.8, 1.0]
+    include_self: [true, false]
