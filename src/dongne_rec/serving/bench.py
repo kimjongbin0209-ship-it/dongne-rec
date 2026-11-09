@@ -1,11 +1,8 @@
-"""4일차: 서빙 latency·정확도 벤치 (batch=1).
+"""서빙 지연과 추천 품질을 검증합니다 (batch=1).
 
 python -m dongne_rec.serving.bench --city NYC
-요청 = test 쿼리 전체(최근 시퀀스 + 직전 장소 좌표). 정답이 있으니 정확도도 같이 재요.
-  표 4: 인코더 백엔드 × 스레드 (2단계 구성)
-  표 5: 파이프라인 구성 (2단계 FAISS / numpy, 1-b 생략, 지리 필터 없음)
-구성마다 새 프로세스에서 재요 (torch·FAISS OpenMP 충돌 방지, 측정 간 간섭 제거).
-결과: results/serving/{city}/R{r}/{sampler}_s{seed}/ bench.md, bench.json
+API와 같은 파이프라인 설정으로 백엔드를 측정하고, 고정 반경과 확장을 별도로 비교합니다.
+각 측정은 별도 프로세스에서 실행합니다. 결과는 실행별 bench.md와 bench.json에 기록합니다.
 """
 from __future__ import annotations
 
@@ -19,12 +16,18 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from dongne_rec.config import load_config
-from dongne_rec.data.split import Queries, load_split
-from dongne_rec.serving.pipeline import TwoStageRecommender, artifacts_dir, load_recommender
+from dongne_rec.config import load_config, resolve_radius
+from dongne_rec.data.split import Queries, load_split_inputs, split_fingerprint
+from dongne_rec.eval.metrics import expected_metrics
+from dongne_rec.experiments import attempt_id, environment_metadata, git_metadata
+from dongne_rec.serving.pipeline import (
+    DEFAULT_SERVING_CONFIG, TwoStageRecommender, artifacts_dir, load_recommender, pipeline_settings,
+)
+from dongne_rec.storage import fingerprint, publish_directory, write_json
 
 STAGES = ("geo_filter", "narrow", "rerank", "total")
 SCALING_SIZES = (1_000, 10_000, 100_000, 1_000_000)
+E4_ATOL = 1e-4
 
 
 def scoring_cost(hidden: int, sizes=SCALING_SIZES, k: int = 10, repeats: int = 30, seed: int = 0) -> list[dict]:
@@ -62,30 +65,45 @@ def scoring_cost(hidden: int, sizes=SCALING_SIZES, k: int = 10, repeats: int = 3
     return rows
 
 
-def run_requests(rec: TwoStageRecommender, q: Queries, warmup: int, k: int = 10) -> pd.DataFrame:
+def run_requests(
+    rec: TwoStageRecommender, q: Queries, warmup: int, k: int = 10, radius_override: float | None = None,
+) -> pd.DataFrame:
+    radius = rec.radius_km if radius_override is None else radius_override
+
     def call(i: int):
         last = q.last_items[i]
-        return rec.recommend(q.histories[i], rec.lat[last], rec.lon[last], k=k)
+        return rec.recommend(q.histories[i], rec.lat[last], rec.lon[last], k=k, radius_km=radius)
 
     for i in range(min(warmup, len(q))):
         call(i)
     rows = []
+    greater, ties = np.zeros(len(q), dtype=np.int64), np.zeros(len(q), dtype=np.int64)
     for i in range(len(q)):
         r = call(i)
-        hit = np.flatnonzero(r.items == q.targets[i])
-        rank = hit[0] + 1 if len(hit) else 0
-        rows.append({**r.timings_ms, "n_geo": r.n_geo, "n_candidates": r.n_candidates, "radius_km": r.radius_km,
-                     "in_candidates": bool(np.isin(q.targets[i], r.candidates)),
-                     f"hr@{k}": float(rank > 0), f"ndcg@{k}": 1 / np.log2(rank + 1) if rank else 0.0})
-    return pd.DataFrame(rows)
+        target = q.targets[i]
+        match = np.flatnonzero(r.candidates == target)
+        if match.size:
+            target_score = r.candidate_scores[match[0]]
+            greater[i] = np.count_nonzero(r.candidate_scores > target_score)
+            ties[i] = np.count_nonzero(r.candidate_scores == target_score) - 1
+        hit = np.flatnonzero(r.items == target)
+        rank = int(hit[0]) + 1 if hit.size else 0
+        rows.append({
+            **r.timings_ms, "n_geo": r.n_geo, "n_candidates": r.n_candidates, "radius_km": r.radius_km,
+            "expanded": r.radius_km > radius, "in_candidates": bool(match.size),
+            f"served_hr@{k}": float(rank > 0), f"served_ndcg@{k}": 1 / np.log2(rank + 1) if rank else 0.0,
+        })
+    df = pd.DataFrame(rows)
+    metrics = expected_metrics(greater, ties, (k,))
+    for metric in (f"hr@{k}", f"ndcg@{k}"):
+        df[metric] = np.where(df["in_candidates"], metrics[metric], 0.0)
+    return df
 
 
-def requests_job(cfg: dict, art: Path, backend: str, threads: int, pipeline_kwargs: dict, warmup: int,
+def requests_job(q: Queries, art: Path, backend: str, threads: int, pipeline_kwargs: dict, warmup: int,
                  radius_override: float | None = None) -> dict:
     rec, _, _ = load_recommender(art, backend, threads, **pipeline_kwargs)
-    if radius_override:
-        rec.radius_km = radius_override
-    return summarize(run_requests(rec, load_split(cfg).test, warmup))
+    return summarize(run_requests(rec, q, warmup, radius_override=radius_override))
 
 
 def isolated(fn, *args):
@@ -98,10 +116,13 @@ def summarize(df: pd.DataFrame, k: int = 10) -> dict:
     out = {f"{s}_{p}": float(np.percentile(df[s], int(p[1:]))) for s in STAGES for p in ("p50", "p95", "p99")}
     out.update({
         "total_mean": float(df["total"].mean()),
-        f"ndcg@{k}": float(df[f"ndcg@{k}"].mean()), f"hr@{k}": float(df[f"hr@{k}"].mean()),
+        **{name: float(df[name].mean()) for name in (f"ndcg@{k}", f"hr@{k}", f"served_ndcg@{k}", f"served_hr@{k}")},
         "stage1_recall": float(df["in_candidates"].mean()),
         "n_candidates_p50": float(df["n_candidates"].median()), "n_geo_p50": float(df["n_geo"].median()),
-        "narrowed_share": float((df["n_geo"] > df["n_candidates"]).mean()), "expanded_share": float((df["radius_km"] > df["radius_km"].min()).mean()),
+        "narrowed_share": float((df["n_geo"] > df["n_candidates"]).mean()),
+        "expanded_share": float(df["expanded"].mean()),
+        "expanded_requests": int(df["expanded"].sum()),
+        "max_radius_used_km": float(df["radius_km"].max()),
     })
     return out
 
@@ -110,115 +131,163 @@ def ms(x: float) -> str:
     return f"{x:.2f}"
 
 
-def render(meta: dict, backend_rows: list[dict], pipeline_rows: list[dict], sweep_rows: list[dict], scaling: list[dict],
-           offline: dict, n: int, pcfg: dict) -> str:
-    ref = next(r for r in pipeline_rows if r["variant"].startswith("2단계 (FAISS)"))
-    return "\n".join([
+def render(
+    meta: dict, backend_rows: list[dict], pipeline_rows: list[dict], sweep_rows: list[dict], scaling: list[dict],
+    n: int, pcfg: dict, parity: dict, skipped: list[str],
+) -> str:
+    lines = [
         f"# 서빙 벤치 — {meta['city']}, R={meta['radius_km']:g}km, {meta['model']} seed {meta['seed']}",
         "",
-        f"`make bench`로 생성된 파일이에요. 프로세스 내 측정, batch=1, test 요청 {n:,}건 (warmup 별도), {platform.platform()}.",
-        f"후보 N={pcfg['n_candidates']}, Stage 1-b 쿼리 = 최근 {pcfg['query_last_n']}개 장소 임베딩 평균.",
+        f"프로세스 내에서 batch 1, test 요청 {n:,}건을 측정했습니다. 실행 환경은 {platform.platform()}입니다.",
+        f"API 공통 설정은 `retrieval={pcfg['retrieval']}`, `radius_mode={pcfg['radius_mode']}`입니다.",
+        "NDCG@10과 HR@10은 오프라인과 동일하게 동점 순위의 기댓값으로 계산합니다. "
+        "실제 반환 순위로 계산한 지표는 bench.json의 `served_*` 필드에 기록합니다.",
         "",
-        "## 표 4. 인코더 백엔드 (2단계 구성)",
+        "## 인코더 백엔드 (API 공통 정책)",
         "",
-        "| 인코더 | 스레드 | 1-b 검색 | 인코더 크기 | Stage 2 p50 / p99 (ms) | E2E p50 / p99 (ms) | NDCG@10 | HR@10 |",
+        "| 인코더 | 스레드 | 후보 방식 | 인코더 크기 | 재랭킹 p50 / p99 (ms) | 전체 p50 / p99 (ms) | NDCG@10 | HR@10 |",
         "|---|---|---|---|---|---|---|---|",
         *[f"| {r['backend']} | {r['threads']} | {r['retrieval']} | {r['size_mb']:.1f}MB | {ms(r['rerank_p50'])} / {ms(r['rerank_p99'])} | "
           f"{ms(r['total_p50'])} / {ms(r['total_p99'])} | {r['ndcg@10']:.4f} | {r['hr@10']:.4f} |" for r in backend_rows],
         "",
-        "torch 인코더는 FAISS와 한 프로세스에서 OpenMP 런타임이 충돌해서(macOS) numpy 검색으로 재요. 두 검색의 후보 집합은 같아요.",
+        *([f"이 환경과 정책에서 측정을 생략한 백엔드는 {', '.join(skipped)}입니다.", ""] if skipped else []),
+        f"인코더 파일 크기는 ONNX fp32 {meta['size_mb']['encoder_fp32.onnx']:.1f}MB, "
+        f"int8 {meta['size_mb']['encoder_int8.onnx']:.1f}MB입니다. 후보 점수는 공통 fp32 아이템 임베딩으로 계산합니다.",
         "",
-        f"아이템 임베딩 {meta['size_mb']['item_emb.npy']:.1f}MB(fp32)는 모든 구성에서 후보 점수 계산에 공통으로 써요. "
-        f"ONNX 변환 오차 max|onnx − torch|: fp32 {meta['max_abs_diff']['fp32']:.1e}, int8 {meta['max_abs_diff']['int8']:.1e}.",
+        "## 반경과 후보 정책 비교 (ONNX, 단일 스레드)",
         "",
-        "## 표 5. 파이프라인 구성 (인코더 onnx-fp32, 단일 스레드)",
+        "| 구성 | 인코더 | 후보 중앙값 | 정답 보존율 | 확장 요청 | 최대 반경(km) | 전체 p50 / p99 (ms) | NDCG@10 | HR@10 | 오프라인 기준 |",
+        "|---|---|---|---|---|---|---|---|---|---|",
+        *[f"| {r['variant']} | {r['backend']} | {r['n_candidates_p50']:.0f} | {r['stage1_recall']:.1%} | "
+          f"{r['expanded_requests']} | {r['max_radius_used_km']:g} | {ms(r['total_p50'])} / {ms(r['total_p99'])} | "
+          f"{r['ndcg@10']:.4f} | {r['hr@10']:.4f} | {r['offline']} |" for r in pipeline_rows],
         "",
-        "| 구성 | 재랭킹 후보 수 (median) | 정답이 후보에 남은 비율 | 1-a / 1-b / 2 p50 (ms) | E2E p50 / p99 (ms) | NDCG@10 | 오프라인 기준 |",
-        "|---|---|---|---|---|---|---|",
-        *[f"| {r['variant']} | {r['n_candidates_p50']:.0f} | {r['stage1_recall']:.1%} | {ms(r['geo_filter_p50'])} / {ms(r['narrow_p50'])} / {ms(r['rerank_p50'])} | "
-          f"{ms(r['total_p50'])} / {ms(r['total_p99'])} | {r['ndcg@10']:.4f} | {r['offline']} |" for r in pipeline_rows],
+        f"고정 반경 FP32의 E4 대조 결과는 **{'통과' if parity['passed'] else '허용 오차 초과'}**입니다. "
+        f"NDCG@10 차이는 {parity['delta']['ndcg@10']:+.2e}, HR@10 차이는 {parity['delta']['hr@10']:+.2e}, "
+        f"절대 허용 오차는 {parity['atol']:g}입니다.",
+        "반경 확장 행은 실제로 검색한 후보로 계산한 별도 결과입니다.",
         "",
-        f"- 오프라인 기준: 같은 체크포인트의 test {offline['E4']:.4f} (E4, 동네 전체 랭킹), {offline['E3']:.4f} (E3, 전체 랭킹). "
-        f"'1-b 생략'과 E4의 작은 차이는 반경 안 장소가 k개 미만이라 반경을 넓힌 요청({ref['expanded_share']:.1%})에서 와요 "
-        "(E4는 반경 밖 정답을 miss로 셈).",
-        f"- 2단계 (FAISS): 반경 안 장소 median {ref['n_geo_p50']:.0f}개, 그중 N개 초과로 1-b가 후보를 줄인 요청 {ref['narrowed_share']:.1%}, "
-        f"반경을 넓힌 요청 {ref['expanded_share']:.1%}.",
-        "",
-        "## 후보 수 N에 따른 trade-off (2단계 FAISS, onnx-fp32 단일 스레드)",
-        "",
-        "| N | 정답이 후보에 남은 비율 | 1-b p50 (ms) | E2E p50 (ms) | NDCG@10 |",
-        "|---|---|---|---|---|",
-        *[f"| {r['n_candidates']} | {r['stage1_recall']:.1%} | {ms(r['narrow_p50'])} | {ms(r['total_p50'])} | {r['ndcg@10']:.4f} |" for r in sweep_rows],
-        "",
-        f"## 카탈로그가 커지면 — 후보 n개 점수 계산 비용 (hidden {meta['hidden']}, 합성 임베딩)",
-        "",
-        "| 후보 수 n | 전체 점수 + 상위 10 (ms) | FAISS IVF 상위 200 (nprobe 8, ms) |",
-        "|---|---|---|",
-        *[f"| {r['n']:,} | {ms(r['brute_p50'])} | {ms(r['ivf_top200_p50'])} |" for r in scaling],
-        "",
-        "인코더 비용(표 4의 Stage 2, 약 0.5~0.8ms)은 후보 수와 무관하고, 전체 점수 계산만 n에 비례해 늘어요.",
-        "",
-    ])
+    ]
+    if sweep_rows:
+        lines.extend([
+            "## FAISS 후보 수 비교 (고정 반경, ONNX fp32 단일 스레드)",
+            "",
+            "| N | 정답 보존율 | 후보 축소 p50 (ms) | 전체 p50 (ms) | NDCG@10 |",
+            "|---|---|---|---|---|",
+            *[f"| {r['n_candidates']} | {r['stage1_recall']:.1%} | {ms(r['narrow_p50'])} | "
+              f"{ms(r['total_p50'])} | {r['ndcg@10']:.4f} |" for r in sweep_rows],
+            "",
+            f"## 합성 임베딩의 후보 수별 검색 비용 (hidden {meta['hidden']})",
+            "",
+            "| 후보 수 | 전체 점수 + 상위 10 (ms) | FAISS IVF 상위 200 (nprobe 8, ms) |",
+            "|---|---|---|",
+            *[f"| {r['n']:,} | {ms(r['brute_p50'])} | {ms(r['ivf_top200_p50'])} |" for r in scaling],
+            "",
+        ])
+    return "\n".join(lines)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="서빙 벤치")
     parser.add_argument("--config", default="configs/data.yaml")
     parser.add_argument("--eval-config", default="configs/eval.yaml")
-    parser.add_argument("--serving-config", default="configs/serving.yaml")
+    parser.add_argument("--serving-config", default=DEFAULT_SERVING_CONFIG)
     parser.add_argument("--city")
+    parser.add_argument("--radius-km", type=float)
     args = parser.parse_args()
 
     cfg = load_config(args.config, city=args.city)
     ecfg, scfg = load_config(args.eval_config), load_config(args.serving_config)
-    radius, sampler, seed = cfg["geo"]["radius_km"], scfg["model"]["sampler"], scfg["model"]["seed"]
+    radius = resolve_radius(cfg, args.radius_km)
+    sampler, seed = scfg["model"]["sampler"], scfg["model"]["seed"]
     art = artifacts_dir(scfg, cfg["city"], radius, sampler, seed)
-    n_requests = len(load_split(cfg).test)
-    pcfg, bcfg = scfg["pipeline"], scfg["bench"]
+    pcfg, bcfg = pipeline_settings(scfg), scfg["bench"]
     meta = json.loads((art / "meta.json").read_text(encoding="utf-8"))
-    offline = json.loads((Path(meta["run"]) / "summary.json").read_text(encoding="utf-8"))["test"]["ndcg@10"]
+    if (meta["city"], meta["radius_km"]) != (cfg["city"], radius):
+        parser.error("서빙 아티팩트의 도시 또는 반경이 다릅니다. 같은 CITY·R로 make export를 실행하세요.")
+    split, _, files = load_split_inputs(cfg)
+    n_requests = len(split.test)
+    evaluation = meta.get("evaluation")
+    if evaluation and (evaluation["data_id"] != fingerprint(files) or evaluation["split_id"] != split_fingerprint(split)):
+        parser.error("서빙 아티팩트의 학습 결과와 현재 벤치의 데이터 또는 분할이 다릅니다.")
+    offline = json.loads((Path(meta["run"]) / "summary.json").read_text(encoding="utf-8"))["test"]
     sizes = {"onnx-fp32": meta["size_mb"]["encoder_fp32.onnx"], "onnx-int8": meta["size_mb"]["encoder_int8.onnx"]}
     torch_size = (Path(meta["run"]) / "model.pt").stat().st_size / 1e6
 
+    skipped = []
+    if pcfg["retrieval"] == "faiss":
+        skipped = [backend for backend in bcfg["backends"] if backend.startswith("torch-")]
+        if skipped:
+            print("[bench] FAISS 설정은 ONNX 백엔드로 측정합니다. Torch와 FAISS의 OpenMP 런타임을 분리합니다.")
+    elif "torch-mps" in bcfg["backends"]:
+        from torch.backends import mps
+
+        if not mps.is_available():
+            skipped.append("torch-mps")
+            print("[bench] 이 환경에서 MPS를 사용할 수 없어 torch-mps 측정을 생략합니다.")
     backend_rows = []
     for backend in bcfg["backends"]:
-        kwargs = {**pcfg, "retrieval": "numpy"} if backend.startswith("torch-") else pcfg
+        if backend in skipped:
+            continue
         for threads in ([1] if backend == "torch-mps" else bcfg["threads"]):
-            row = {"backend": backend, "threads": "기본" if threads == 0 else threads, "retrieval": kwargs["retrieval"],
-                   "size_mb": sizes.get(backend, torch_size), **isolated(requests_job, cfg, art, backend, threads, kwargs, bcfg["warmup"])}
+            row = {
+                "backend": backend, "threads": "기본" if threads == 0 else threads,
+                "retrieval": pcfg["retrieval"], "radius_mode": pcfg["radius_mode"],
+                "size_mb": sizes.get(backend, torch_size),
+                **isolated(requests_job, split.test, art, backend, threads, pcfg, bcfg["warmup"]),
+            }
             backend_rows.append(row)
             print(f"[bench] {backend:<10} threads={row['threads']}: E2E p50 {row['total_p50']:.2f}ms p99 {row['total_p99']:.2f}ms, "
                   f"stage2 p50 {row['rerank_p50']:.2f}ms, NDCG@10 {row['ndcg@10']:.4f}")
 
-    variants = [
-        ("2단계 (FAISS)", {}, "E4"),
-        ("2단계 (numpy brute force)", {"retrieval": "numpy"}, "E4"),
-        ("지리 필터 + 반경 안 전체 재랭킹 (1-b 생략)", {"n_candidates": 10**9}, "E4"),
-        ("지리 필터 없음, 전체 카탈로그 재랭킹", {"n_candidates": 10**9, "radius_override": 1e5}, "E3"),
-    ]
+    fixed = {**pcfg, "retrieval": "full", "radius_mode": "fixed"}
+    expanded = {**fixed, "radius_mode": "expand"}
+    variants = []
+    for backend in ("onnx-fp32", "onnx-int8"):
+        variants.append(("고정 반경 · 전체", backend, fixed, None, "E4"))
+        variants.append(("반경 확장 · 전체", backend, expanded, None, None))
+    variants.append(("전체 카탈로그", "onnx-fp32", fixed, 1e5, "E3"))
+    diagnostics = bcfg.get("retrieval_diagnostics", False)
+    if diagnostics:
+        for retrieval in ("faiss", "numpy"):
+            variants.append((f"고정 반경 · {retrieval}", "onnx-fp32", {**fixed, "retrieval": retrieval}, None, "E4"))
+
     pipeline_rows = []
-    for name, override, ref in variants:
-        kwargs = {**pcfg, **{k: v for k, v in override.items() if k != "radius_override"}}
-        summary = isolated(requests_job, cfg, art, "onnx-fp32", 1, kwargs, bcfg["warmup"], override.get("radius_override"))
-        row = {"variant": name, "offline": f"{ref} {offline[ref]:.4f}", **summary}
+    for name, backend, policy, radius_override, ref in variants:
+        summary = isolated(requests_job, split.test, art, backend, 1, policy, bcfg["warmup"], radius_override)
+        row = {
+            "variant": name, "backend": backend, "policy": policy, "radius_override": radius_override,
+            "offline": f"{ref} {offline['ndcg@10'][ref]:.4f}" if ref else "—", **summary,
+        }
         pipeline_rows.append(row)
-        print(f"[bench] {name}: candidates {row['n_candidates_p50']:.0f}, recall {row['stage1_recall']:.1%}, "
-              f"E2E p50 {row['total_p50']:.2f}ms, NDCG@10 {row['ndcg@10']:.4f} (offline {row['offline']})")
+        print(f"[bench] {name} {backend} | 후보 중앙값 {row['n_candidates_p50']:.0f}, "
+              f"정답 보존율 {row['stage1_recall']:.1%}, 확장 {row['expanded_requests']}건, NDCG@10 {row['ndcg@10']:.4f}")
+
+    fixed_fp32 = pipeline_rows[0]
+    delta = {metric: fixed_fp32[metric] - offline[metric]["E4"] for metric in ("ndcg@10", "hr@10")}
+    parity = {"atol": E4_ATOL, "delta": delta, "passed": all(abs(d) <= E4_ATOL for d in delta.values())}
+    print(f"[bench] E4 대조 {'통과' if parity['passed'] else '허용 오차 초과'} | "
+          f"NDCG@10 {delta['ndcg@10']:+.2e}, HR@10 {delta['hr@10']:+.2e}")
 
     sweep_rows = []
-    for n_cand in (50, 100, 200, 500, 1000):
-        summary = isolated(requests_job, cfg, art, "onnx-fp32", 1, {**pcfg, "n_candidates": n_cand}, bcfg["warmup"])
-        sweep_rows.append({"n_candidates": n_cand, **{k: v for k, v in summary.items() if k != "n_candidates_p50"}})
-    print("[bench] N sweep: " + ", ".join(f"N={r['n_candidates']} recall {r['stage1_recall']:.1%} NDCG {r['ndcg@10']:.4f}" for r in sweep_rows))
+    scaling = []
+    if diagnostics:
+        for n_cand in (50, 100, 200, 500, 1000):
+            policy = {**fixed, "retrieval": "faiss", "n_candidates": n_cand}
+            summary = isolated(requests_job, split.test, art, "onnx-fp32", 1, policy, bcfg["warmup"])
+            sweep_rows.append({"n_candidates": n_cand, **summary})
+        scaling = isolated(scoring_cost, meta["hidden"])
 
-    scaling = isolated(scoring_cost, meta["hidden"])
-    print("[bench] scoring cost: " + ", ".join(f"n={r['n']:,} {r['brute_p50']:.2f}ms (IVF {r['ivf_top200_p50']:.2f}ms)" for r in scaling))
-
-    out = Path(ecfg["results_dir"]) / "serving" / cfg["city"] / f"R{radius:g}" / f"{sampler}_s{seed}"
-    out.mkdir(parents=True, exist_ok=True)
-    (out / "bench.json").write_text(json.dumps({"meta": meta, "backends": backend_rows, "pipelines": pipeline_rows,
-                                                "n_sweep": sweep_rows, "scaling": scaling}, ensure_ascii=False, indent=2), encoding="utf-8")
-    (out / "bench.md").write_text(render(meta, backend_rows, pipeline_rows, sweep_rows, scaling, offline, n_requests, pcfg), encoding="utf-8")
+    out = Path(ecfg["results_dir"]) / "serving" / cfg["city"] / f"R{radius:g}" / f"{sampler}_s{seed}" / attempt_id("bench")
+    with publish_directory(out) as staging:
+        write_json(staging / "bench.json", {
+            "meta": meta, "pipeline": pcfg, "bench": bcfg, "environment": environment_metadata(), "git": git_metadata(),
+            "backends": backend_rows, "skipped_backends": skipped,
+            "pipelines": pipeline_rows, "offline": offline, "e4_parity": parity, "n_sweep": sweep_rows, "scaling": scaling,
+        })
+        (staging / "bench.md").write_text(
+            render(meta, backend_rows, pipeline_rows, sweep_rows, scaling, n_requests, pcfg, parity, skipped), encoding="utf-8",
+        )
     print(f"[bench] → {out / 'bench.md'}")
 
 

@@ -1,6 +1,6 @@
 """학습된 SASRec → 서빙 아티팩트 (ONNX 인코더 fp32·int8 + 아이템 임베딩 + 장소 메타).
 
-python -m dongne_rec.serving.export_onnx --city NYC --sampler mixed --seed 0
+python -m dongne_rec.serving.export_onnx --city NYC
 결과: artifacts/{city}/R{r}/{sampler}_s{seed}/
   encoder_fp32.onnx, encoder_int8.onnx  시퀀스 (B, max_len) int64 → 유저 표현 (B, H)
   item_emb.npy                          (N+1, H) float32, 점수 = h · e_i
@@ -19,7 +19,9 @@ import numpy as np
 import pandas as pd
 import torch
 
-from dongne_rec.config import city_dir, load_config
+from dongne_rec.config import city_dir, load_config, resolve_radius
+from dongne_rec.data.split import read_parquet_input
+from dongne_rec.experiments import saved_runs
 from dongne_rec.models.sasrec import SASRec, pad_left
 from dongne_rec.serving.pipeline import artifacts_dir
 from dongne_rec.train.trainer import model_name, run_dir
@@ -69,8 +71,10 @@ def max_abs_diff(onnx_path: Path, model: SASRec, seq: np.ndarray) -> float:
 
 
 def export_artifacts(run: Path, items: pd.DataFrame, out: Path, extra_meta: dict) -> dict:
-    out.mkdir(parents=True, exist_ok=True)
     model = load_trained(run)
+    if len(items) != model.n_items:
+        raise ValueError("체크포인트와 장소 카탈로그의 크기가 다릅니다.")
+    out.mkdir(parents=True, exist_ok=True)
     fp32, int8 = out / "encoder_fp32.onnx", out / "encoder_int8.onnx"
     export_encoder(model, fp32)
     quantize_int8(fp32, int8)
@@ -91,21 +95,63 @@ def export_artifacts(run: Path, items: pd.DataFrame, out: Path, extra_meta: dict
     return meta
 
 
+def select_checkpoint(
+    ecfg: dict, city: str, radius: float, sampler: str, seed: int, items_hash: str, explicit: Path | None,
+) -> tuple[Path, dict]:
+    if explicit:
+        run = explicit
+        manifest = run / "metadata.json"
+        info = json.loads(manifest.read_text(encoding="utf-8")) if manifest.is_file() else {}
+        summary = json.loads((run / "summary.json").read_text(encoding="utf-8"))
+        actual = (summary["city"], summary["radius_km"], summary.get("sampler"), summary.get("seed"))
+        if actual != (city, radius, sampler, seed):
+            raise ValueError("선택한 체크포인트의 도시·반경·샘플러·시드와 서빙 설정을 맞춰 주세요.")
+        if info and info["evaluation"]["processed_files"]["items.parquet"] != items_hash:
+            raise ValueError("선택한 체크포인트와 현재 장소 카탈로그의 지문이 다릅니다.")
+    else:
+        run, info = run_dir(ecfg, city, radius, sampler, seed), {}
+        checkpoints = [
+            (path, record) for path, record in saved_runs(Path(ecfg["results_dir"]), city, radius)
+            if record["kind"] == "sasrec" and record["tag"] is None
+            and (record["sampler"], record["seed"]) == (sampler, seed)
+            and (path / "model.pt").is_file()
+        ]
+        if checkpoints:
+            for path, record in reversed(checkpoints):
+                if record["evaluation"]["processed_files"]["items.parquet"] == items_hash:
+                    run, info = path, record
+                    break
+            else:
+                raise ValueError("현재 장소 카탈로그의 지문과 일치하는 체크포인트가 없습니다.")
+    if not (run / "model.pt").is_file():
+        raise FileNotFoundError(f"체크포인트가 없습니다. {run / 'model.pt'}")
+    return run, info
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="SASRec → ONNX 서빙 아티팩트")
     parser.add_argument("--config", default="configs/data.yaml")
     parser.add_argument("--eval-config", default="configs/eval.yaml")
     parser.add_argument("--serving-config", default="configs/serving.yaml")
     parser.add_argument("--city")
+    parser.add_argument("--radius-km", type=float)
+    parser.add_argument("--run", type=Path, help="내보낼 학습 실행 디렉터리")
     args = parser.parse_args()
 
     cfg = load_config(args.config, city=args.city)
     ecfg, scfg = load_config(args.eval_config), load_config(args.serving_config)
-    radius, sampler, seed = cfg["geo"]["radius_km"], scfg["model"]["sampler"], scfg["model"]["seed"]
-    run = run_dir(ecfg, cfg["city"], radius, sampler, seed)
-    items = pd.read_parquet(city_dir(cfg, "processed_dir") / "items.parquet")
+    radius = resolve_radius(cfg, args.radius_km)
+    sampler, seed = scfg["model"]["sampler"], scfg["model"]["seed"]
+    items, items_hash = read_parquet_input(city_dir(cfg, "processed_dir") / "items.parquet")
+    try:
+        run, info = select_checkpoint(ecfg, cfg["city"], radius, sampler, seed, items_hash, args.run)
+    except (FileNotFoundError, ValueError) as exc:
+        parser.error(str(exc))
     out = artifacts_dir(scfg, cfg["city"], radius, sampler, seed)
-    meta = export_artifacts(run, items, out, {"city": cfg["city"], "radius_km": radius, "model": model_name(sampler), "seed": seed})
+    extra = {"city": cfg["city"], "radius_km": radius, "model": model_name(sampler), "seed": seed}
+    if info:
+        extra.update({"run_id": info["run_id"], "evaluation": info["evaluation"]})
+    meta = export_artifacts(run, items, out, extra)
     print(f"[export] {meta['model']} seed {seed} → {out}")
     print(f"[export] max |onnx − torch|: fp32 {meta['max_abs_diff']['fp32']:.2e}, int8 {meta['max_abs_diff']['int8']:.2e}")
     print("[export] size: " + ", ".join(f"{k} {v:.1f}MB" for k, v in meta["size_mb"].items()))

@@ -24,11 +24,13 @@ import pandas as pd
 
 from dongne_rec.config import city_dir
 from dongne_rec.data.geo import GeoIndex, haversine_km
-from dongne_rec.data.split import Queries, Split
+from dongne_rec.data.split import Queries, Split, split_fingerprint
 from dongne_rec.eval.metrics import expected_metrics
+from dongne_rec.storage import arrays_fingerprint, fingerprint, read_npz_cache, save_npz
 
 PROTOCOLS = ("E1", "E2", "E3", "E4")
 PROTOCOL_NAMES = {"E1": "Global-sampled", "E2": "Geo-sampled", "E3": "Full", "E4": "Geo-full"}
+CANDIDATE_CACHE_VERSION = 1  # 후보 생성 방식이 바뀌면 올립니다.
 
 
 class Scorer(Protocol):
@@ -60,21 +62,44 @@ def sample_candidates(q: Queries, geo: GeoIndex, n_neg: int, rng: np.random.Gene
     return {"E1": e1, "E2": e2, "E2_fill": fill}
 
 
-def candidates_path(cfg: dict, radius_km: float, n_neg: int, seed: int) -> Path:
-    return city_dir(cfg, "processed_dir") / f"eval_candidates_R{radius_km:g}_n{n_neg}_s{seed}.npz"
+def candidate_cache_key(geo: GeoIndex, n_neg: int, seed: int, split_id: str, data_id: str | None = None) -> str:
+    return fingerprint({
+        "version": CANDIDATE_CACHE_VERSION,
+        "numpy": np.__version__,
+        "data_id": data_id,
+        "split_id": split_id,
+        "radius_km": float(geo.radius_km),
+        "geo": arrays_fingerprint((geo.lat, geo.lon, geo.indptr, geo.indices)),
+        "n_neg": n_neg,
+        "seed": seed,
+    })
 
 
-def load_or_sample_candidates(cfg: dict, split: Split, geo: GeoIndex, n_neg: int, seed: int) -> dict[str, dict[str, np.ndarray]]:
-    """{stage: {"E1", "E2", "E2_fill"}}. 저장된 후보가 있으면 그대로 써서 모델 간·실행 간 후보가 같게 해요."""
-    path = candidates_path(cfg, geo.radius_km, n_neg, seed)
-    if path.exists():
-        with np.load(path) as z:
-            cands = {s: {k: z[f"{s}_{k}"] for k in ("E1", "E2", "E2_fill")} for s in ("valid", "test")}
-        if all(len(cands[s]["E1"]) == len(split.queries(s)) for s in cands):
-            return cands
+def candidates_path(cfg: dict, radius_km: float, n_neg: int, seed: int, key: str) -> Path:
+    return city_dir(cfg, "processed_dir") / "cache" / "candidates" / f"R{radius_km:g}_n{n_neg}_s{seed}-{key}.npz"
+
+
+def load_or_sample_candidates(
+    cfg: dict, split: Split, geo: GeoIndex, n_neg: int, seed: int, *, cache_key: str | None = None,
+) -> dict[str, dict[str, np.ndarray]]:
+    """공유 후보는 실제 분할과 이웃 인덱스가 일치할 때 재사용합니다."""
+    if split.n_items != geo.n_items:
+        raise ValueError("분할과 이웃 인덱스의 장소 수가 다릅니다.")
+    key = cache_key or candidate_cache_key(geo, n_neg, seed, split_fingerprint(split))
+    path = candidates_path(cfg, geo.radius_km, n_neg, seed, key)
+    stages = ("valid", "test")
+    shapes = {}
+    for stage in stages:
+        n_queries = len(split.queries(stage))
+        shapes.update({f"{stage}_E1": (n_queries, n_neg), f"{stage}_E2": (n_queries, n_neg), f"{stage}_E2_fill": (n_queries,)})
+    cached = read_npz_cache(path, shapes)
+    if cached is not None and all(
+        cached[k].shape == shape and np.issubdtype(cached[k].dtype, np.integer) for k, shape in shapes.items()
+    ):
+        return {s: {k: cached[f"{s}_{k}"] for k in ("E1", "E2", "E2_fill")} for s in stages}
     rng = np.random.default_rng(seed)
-    cands = {s: sample_candidates(split.queries(s), geo, n_neg, rng) for s in ("valid", "test")}
-    np.savez_compressed(path, **{f"{s}_{k}": v for s, c in cands.items() for k, v in c.items()})
+    cands = {s: sample_candidates(split.queries(s), geo, n_neg, rng) for s in stages}
+    save_npz(path, **{f"{s}_{k}": v for s, c in cands.items() for k, v in c.items()})
     return cands
 
 
@@ -94,7 +119,7 @@ def evaluate(
         near = geo.mask(last)
 
         counts = {}
-        for p, has_target in (("E1", np.ones(len(idx), dtype=bool)), ("E2", near[rows, targets])):
+        for p, has_target in (("E1", targets > 0), ("E2", near[rows, targets])):
             neg = scores[rows[:, None], cands[p][idx]]
             counts[p] = ((neg > target_score).sum(1), (neg == target_score).sum(1), has_target)
 

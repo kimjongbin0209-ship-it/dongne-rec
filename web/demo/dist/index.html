@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4ec">
+  <meta name="description" content="뉴욕의 합성 방문 경로로 SASRec의 동네 후보 전체 재랭킹과 FAISS 200을 비교해 보세요.">
+  <title>동네 추천 실험실 · dongne-rec</title>
+  <link rel="icon" href="./mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#explore">추천 비교로 이동</a>
+  <header class="site-header wrap">
+    <a class="brand" href="./" aria-label="동네 추천 실험실 홈">
+      <img src="./mark.svg" width="30" height="30" alt="">
+      <span>동네 추천 실험실<small>DONGNE-REC</small></span>
+    </a>
+    <a class="nav-link" href="#benchmark">HTTP 벤치마크 <span aria-hidden="true">↘</span></a>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" aria-labelledby="title">
+      <div>
+        <p class="eyebrow"><span class="dot"></span> NEW YORK CITY <span class="slash">/</span> RECOMMENDATION LAB</p>
+        <h1 id="title">동네 안에서<br>다음 장소 찾기<span class="accent">.</span></h1>
+      </div>
+      <div class="hero-note">
+        <span class="mono muted">01 / INTERACTIVE DEMO</span>
+        <p>방문 경로와 검색 반경을 바꿔 보세요. 같은 동네에서 후보를 모두 평가할 때와 FAISS로 200개만 골라 평가할 때 추천이 어떻게 달라지는지 볼 수 있습니다.</p>
+        <span class="tag">SASRec-S2 · ONNX INT8</span>
+      </div>
+    </section>
+
+    <section id="explore" class="lab" aria-label="추천 정책 비교">
+      <div class="controls">
+        <label class="scenario" for="profile"><span class="control-label">01 / 방문 시나리오</span>
+          <select id="profile" disabled><option>불러오는 중</option></select>
+        </label>
+        <fieldset>
+          <legend class="control-label">02 / 고정 반경</legend>
+          <div class="segments" id="radii" aria-label="고정 반경"></div>
+        </fieldset>
+        <fieldset>
+          <legend class="control-label">03 / 후보 정책</legend>
+          <div class="segments" id="policies" aria-label="후보 정책"></div>
+        </fieldset>
+      </div>
+      <div class="workspace">
+        <div class="radar">
+          <div class="radar-header">
+            <div><span class="radar-label" id="borough">NEW YORK CITY</span><h2 id="area">검색 영역</h2></div>
+            <span class="radar-radius" id="radius-badge">— km</span>
+          </div>
+          <div class="radar-stage">
+            <svg id="radar" viewBox="0 0 400 400" aria-label="검색 중심과 추천 장소의 상대 위치" role="group"></svg>
+          </div>
+          <div class="radar-footer">
+            <div><span class="radar-label">합성 방문 순서</span><p id="history">—</p></div>
+            <span class="map-key"><i></i> 검색 중심</span>
+          </div>
+        </div>
+        <div class="results">
+          <header>
+            <div class="result-heading"><h2>추천 순위</h2><span class="tag">TOP 10</span></div>
+            <p class="result-count" id="candidate-count" role="status">추천 데이터를 불러오는 중입니다.</p>
+          </header>
+          <ol id="ranking" class="ranking" aria-label="추천 장소 순위"></ol>
+          <p id="overlap" class="overlap"></p>
+        </div>
+      </div>
+      <p class="lab-note">각 결과는 합성 방문 이력을 실제 추천 API에 넣어 미리 계산했습니다. 위치는 검색 중심에 대한 거리 도식으로 표시합니다.</p>
+      <noscript><p class="lab-note">추천 결과를 보려면 JavaScript를 켜 주세요.</p></noscript>
+    </section>
+
+    <section id="benchmark" class="benchmark" aria-labelledby="bench-title">
+      <div class="bench-intro">
+        <p class="eyebrow">02 / SERVING PERFORMANCE</p>
+        <h2 id="bench-title">실제 HTTP 부하 측정</h2>
+        <p>NYC · 고정 3km · ONNX int8 · Uvicorn 워커 1개. 두 정책에 같은 요청을 보내 동시성별 응답 지연과 처리량을 측정했습니다.</p>
+        <p class="mono muted" id="bench-source"></p>
+      </div>
+      <div class="bench-table">
+        <table>
+          <thead><tr><th scope="col">동시성</th><th scope="col">정책</th><th scope="col">HTTP p99</th><th scope="col">성공 건/초</th></tr></thead>
+          <tbody id="bench-rows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer wrap"><span>DONGNE-REC / NEW YORK CITY</span><span>Foursquare 체크인 카탈로그 · 연구용 데모</span></footer>
+</body>
+</html>

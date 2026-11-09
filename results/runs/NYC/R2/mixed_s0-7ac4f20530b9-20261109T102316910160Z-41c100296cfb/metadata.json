@@ -1,0 +1,190 @@
+{
+  "run_id": "mixed_s0-7ac4f20530b9-20261109T102316910160Z-41c100296cfb",
+  "experiment_id": "7ac4f20530b9f210393f74bb02cb71d7bdf8f3fcbb5aa5dfa04482513ac4a1b2",
+  "variant_id": "668d8e3279bb8588e12c6625639b6eb60dd9cd502bab4a4417e8f6ac2b407154",
+  "created_at": "2026-11-09T10:23:16.910160+00:00",
+  "kind": "sasrec",
+  "sampler": "mixed",
+  "seed": 0,
+  "tag": "phase3-loo",
+  "device": "mps",
+  "evaluation": {
+    "schema_version": 1,
+    "city": "NYC",
+    "radius_km": 2.0,
+    "data_id": "ec533a0ac791f7af7080e497795369b6e7462a48a1f5f8b7b56b54a6b9c01deb",
+    "split_id": "54a2d293932a12e837dc6e11e97e2b3d00fbc7d7144075641e6e08af9385a54d",
+    "candidate_cache_key": "91009a0366ad332ffd0ca71b3c09b615f18c08785a96123552b2e1a4188f11b8",
+    "ks": [
+      10
+    ],
+    "evaluation_id": "ab8c3972fbf9fcf1c546b1b00662f01e6f4387fa0a8b38b4d66d05dc200cad3b",
+    "processed_files": {
+      "interactions.parquet": "5da80ff297f8c63543e67e662ea802064f8e0391c97c7d4f4f66100dbc767586",
+      "items.parquet": "aa8fc58e94986bc0baee20db1f080e0579815f9f22cde9be3bfe7ee202dd3d6c"
+    },
+    "split_strategy": "leave-one-out"
+  },
+  "configs": {
+    "data": {
+      "city": "NYC",
+      "raw_dir": "data/raw",
+      "processed_dir": "data/processed",
+      "eda_dir": "results/eda",
+      "min_user_checkins": 5,
+      "min_item_checkins": 5,
+      "collapse_consecutive_duplicates": true,
+      "geo": {
+        "radius_km": 2.0,
+        "sensitivity_radii_km": [
+          2,
+          5
+        ],
+        "candidate_radii_km": [
+          0.5,
+          1,
+          2,
+          3,
+          5,
+          10
+        ],
+        "radius_choices_km": [
+          1,
+          2,
+          3,
+          5
+        ],
+        "max_pool_share": 0.15
+      }
+    },
+    "eval": {
+      "n_sampled_negatives": 100,
+      "seed": 0,
+      "ks": [
+        10
+      ],
+      "batch_size": 256,
+      "primary": {
+        "protocol": "E4",
+        "metric": "ndcg@10"
+      },
+      "results_dir": "results",
+      "itemknn": {
+        "topk_neighbors": 100,
+        "grid": {
+          "last_n": [
+            1,
+            5,
+            null
+          ],
+          "decay": [
+            0.5,
+            0.8,
+            1.0
+          ],
+          "include_self": [
+            true,
+            false
+          ]
+        }
+      }
+    },
+    "sasrec": {
+      "model": {
+        "max_len": 100,
+        "hidden": 256,
+        "n_blocks": 2,
+        "n_heads": 1,
+        "dropout": 0.3
+      },
+      "train": {
+        "geo_ratio": 0.5,
+        "windows": "all",
+        "lr": 0.001,
+        "batch_size": 128,
+        "epochs": 200,
+        "eval_every": 5,
+        "patience": 4,
+        "device": "mps"
+      }
+    }
+  },
+  "environment": {
+    "python": "3.12.12",
+    "python_build": [
+      "main",
+      "Oct 22 2025 23:34:53"
+    ],
+    "platform": "macOS-27.2-arm64-arm-64bit",
+    "architecture": "arm64",
+    "cpu": "Apple M4 Pro",
+    "logical_cpus": 12,
+    "packages": {
+      "annotated-doc": "0.0.5",
+      "annotated-types": "0.8.0",
+      "anyio": "4.15.1",
+      "certifi": "2026.10.23",
+      "click": "8.5.0",
+      "cloudpickle": "3.1.2",
+      "contourpy": "1.4.0",
+      "cycler": "0.12.1",
+      "dongne-rec": "0.1.0",
+      "faiss-cpu": "1.15.1",
+      "fastapi": "0.162.0",
+      "filelock": "4.2.5",
+      "flatbuffers": "25.12.19",
+      "fonttools": "4.68.0",
+      "fsspec": "2026.9.0",
+      "h11": "0.16.0",
+      "httpcore": "1.0.9",
+      "httpx": "0.28.1",
+      "idna": "3.20",
+      "iniconfig": "2.3.1",
+      "Jinja2": "3.1.6",
+      "joblib": "1.6.0",
+      "kiwisolver": "1.5.1",
+      "MarkupSafe": "3.0.4",
+      "matplotlib": "3.11.2",
+      "ml_dtypes": "0.6.0",
+      "mpmath": "1.3.0",
+      "narwhals": "2.28.0",
+      "networkx": "3.7",
+      "numpy": "2.5.4",
+      "onnx": "1.23.2",
+      "onnx-ir": "1.1.0",
+      "onnxruntime": "1.31.1",
+      "onnxscript": "0.7.2",
+      "opentelemetry-api": "1.45.2",
+      "packaging": "26.3",
+      "pandas": "3.1.0",
+      "pillow": "13.0.0",
+      "pip": "26.2.2",
+      "pluggy": "1.7.0",
+      "protobuf": "7.36.2",
+      "pyarrow": "26.0.0",
+      "pydantic": "2.14.2",
+      "pydantic_core": "2.50.2",
+      "Pygments": "2.21.0",
+      "pyparsing": "3.3.3",
+      "pytest": "9.2.0",
+      "python-dateutil": "3.0.0",
+      "PyYAML": "6.0.3",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "setuptools": "84.2.1",
+      "six": "1.17.0",
+      "starlette": "1.10.0",
+      "sympy": "1.14.0",
+      "threadpoolctl": "3.7.0",
+      "torch": "2.15.0",
+      "typing-inspection": "0.4.4",
+      "typing_extensions": "4.16.0",
+      "tzdata": "2026.6",
+      "uvicorn": "0.54.0"
+    }
+  },
+  "git": {
+    "commit": "95d158d508b0791e00dcf9a1e7b402624a2b7db2",
+    "dirty": true
+  }
+}

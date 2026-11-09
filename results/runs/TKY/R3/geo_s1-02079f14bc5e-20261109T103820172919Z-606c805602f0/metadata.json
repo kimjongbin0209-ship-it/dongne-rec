@@ -1,0 +1,200 @@
+{
+  "run_id": "geo_s1-02079f14bc5e-20261109T103820172919Z-606c805602f0",
+  "experiment_id": "02079f14bc5ef00f8ec2a8c43a59ca56d56dc82e245fe57df08e9968022ad3fa",
+  "variant_id": "bd836d7af9d0096f6c6acb644ab747d28aaa0d128b7d54c86698e2c4d6208111",
+  "created_at": "2026-11-09T10:38:20.172919+00:00",
+  "kind": "sasrec",
+  "sampler": "geo",
+  "seed": 1,
+  "tag": "phase3-global",
+  "device": "mps",
+  "evaluation": {
+    "schema_version": 1,
+    "city": "TKY",
+    "radius_km": 3.0,
+    "data_id": "f53877442df6e9fa047b4a1476d48f500541a4a5dfad4cb1d98bce696b312d73",
+    "split_id": "745471c7268c12a45fe74c48032c19341f7ef3654ca1066f07ea80d436438df8",
+    "candidate_cache_key": "7ac45f0ae8ee8554912d38845b97a45238030235dcac1340d6b1643a50940440",
+    "ks": [
+      10
+    ],
+    "evaluation_id": "533299daec32c4785cb4470f85babcaec49a1ff6967435d8f5ed0f7a42209f4b",
+    "processed_files": {
+      "interactions.parquet": "15307fc69084916797362ac5b2f887d178ca9df6fa473e02d3079b29bbc41492",
+      "items.parquet": "48fc64a0a160c17b4ddc41872621a26484bf42242806f162cf01619126a90fb1",
+      "holdout.parquet": "31927d9c40205a7029a8bd2f4aca06780d7a54e852d90941f41e28ed72984e04"
+    },
+    "split_strategy": "global-time",
+    "split_cutoffs": [
+      "2012-12-01T00:00:00+00:00",
+      "2013-01-01T00:00:00+00:00"
+    ]
+  },
+  "configs": {
+    "data": {
+      "city": "TKY",
+      "raw_dir": "data/raw",
+      "processed_dir": "data/processed/global-time",
+      "eda_dir": "results/eda/global-time",
+      "min_user_checkins": 5,
+      "min_item_checkins": 5,
+      "collapse_consecutive_duplicates": true,
+      "split": {
+        "strategy": "global-time",
+        "train_end": "2012-12-01T00:00:00Z",
+        "valid_end": "2013-01-01T00:00:00Z"
+      },
+      "geo": {
+        "radius_km": 3.0,
+        "sensitivity_radii_km": [
+          2,
+          5
+        ],
+        "candidate_radii_km": [
+          0.5,
+          1,
+          2,
+          3,
+          5,
+          10
+        ],
+        "radius_choices_km": [
+          1,
+          2,
+          3,
+          5
+        ],
+        "max_pool_share": 0.15
+      }
+    },
+    "eval": {
+      "n_sampled_negatives": 100,
+      "seed": 0,
+      "ks": [
+        10
+      ],
+      "batch_size": 256,
+      "primary": {
+        "protocol": "E4",
+        "metric": "ndcg@10"
+      },
+      "results_dir": "results",
+      "itemknn": {
+        "topk_neighbors": 100,
+        "grid": {
+          "last_n": [
+            1,
+            5,
+            null
+          ],
+          "decay": [
+            0.5,
+            0.8,
+            1.0
+          ],
+          "include_self": [
+            true,
+            false
+          ]
+        }
+      }
+    },
+    "sasrec": {
+      "model": {
+        "max_len": 100,
+        "hidden": 256,
+        "n_blocks": 2,
+        "n_heads": 1,
+        "dropout": 0.3
+      },
+      "train": {
+        "geo_ratio": 0.5,
+        "windows": "all",
+        "lr": 0.001,
+        "batch_size": 128,
+        "epochs": 200,
+        "eval_every": 5,
+        "patience": 4,
+        "device": "mps"
+      }
+    }
+  },
+  "environment": {
+    "python": "3.12.12",
+    "python_build": [
+      "main",
+      "Oct 22 2025 23:34:53"
+    ],
+    "platform": "macOS-27.2-arm64-arm-64bit",
+    "architecture": "arm64",
+    "cpu": "Apple M4 Pro",
+    "logical_cpus": 12,
+    "packages": {
+      "annotated-doc": "0.0.5",
+      "annotated-types": "0.8.0",
+      "anyio": "4.15.1",
+      "certifi": "2026.10.23",
+      "click": "8.5.0",
+      "cloudpickle": "3.1.2",
+      "contourpy": "1.4.0",
+      "cycler": "0.12.1",
+      "dongne-rec": "0.1.0",
+      "faiss-cpu": "1.15.1",
+      "fastapi": "0.162.0",
+      "filelock": "4.2.5",
+      "flatbuffers": "25.12.19",
+      "fonttools": "4.68.0",
+      "fsspec": "2026.9.0",
+      "h11": "0.16.0",
+      "httpcore": "1.0.9",
+      "httpx": "0.28.1",
+      "idna": "3.20",
+      "iniconfig": "2.3.1",
+      "Jinja2": "3.1.6",
+      "joblib": "1.6.0",
+      "kiwisolver": "1.5.1",
+      "MarkupSafe": "3.0.4",
+      "matplotlib": "3.11.2",
+      "ml_dtypes": "0.6.0",
+      "mpmath": "1.3.0",
+      "narwhals": "2.28.0",
+      "networkx": "3.7",
+      "numpy": "2.5.4",
+      "onnx": "1.23.2",
+      "onnx-ir": "1.1.0",
+      "onnxruntime": "1.31.1",
+      "onnxscript": "0.7.2",
+      "opentelemetry-api": "1.45.2",
+      "packaging": "26.3",
+      "pandas": "3.1.0",
+      "pillow": "13.0.0",
+      "pip": "26.2.2",
+      "pluggy": "1.7.0",
+      "protobuf": "7.36.2",
+      "pyarrow": "26.0.0",
+      "pydantic": "2.14.2",
+      "pydantic_core": "2.50.2",
+      "Pygments": "2.21.0",
+      "pyparsing": "3.3.3",
+      "pytest": "9.2.0",
+      "python-dateutil": "3.0.0",
+      "PyYAML": "6.0.3",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "setuptools": "84.2.1",
+      "six": "1.17.0",
+      "starlette": "1.10.0",
+      "sympy": "1.14.0",
+      "threadpoolctl": "3.7.0",
+      "torch": "2.15.0",
+      "typing-inspection": "0.4.4",
+      "typing_extensions": "4.16.0",
+      "tzdata": "2026.6",
+      "uvicorn": "0.54.0"
+    }
+  },
+  "git": {
+    "commit": "95d158d508b0791e00dcf9a1e7b402624a2b7db2",
+    "dirty": true
+  }
+}

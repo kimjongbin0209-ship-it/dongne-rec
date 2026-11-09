@@ -3,8 +3,8 @@ import pandas as pd
 import pytest
 
 from dongne_rec.data.geo import GeoIndex, haversine_km, radius_neighbors_csr
-from dongne_rec.data.split import Queries
-from dongne_rec.eval.protocols import evaluate, sample_candidates
+from dongne_rec.data.split import Queries, Split
+from dongne_rec.eval.protocols import evaluate, load_or_sample_candidates, sample_candidates
 
 N = 60
 
@@ -53,6 +53,25 @@ def test_geo_negatives_are_filled_with_nearest_when_radius_is_too_small():
     assert sorted(c["E2"][0].tolist()) == [28, 29, 31, 32]
 
 
+def test_candidate_cache_rebuilds_when_target_changes_without_changing_query_count(tmp_path):
+    cfg = {"processed_dir": str(tmp_path), "city": "TEST"}
+    geo = line_geo(radius_km=3.0)
+    valid = queries([[1, 2]], [3])
+    split = Split(N, valid.histories, valid, queries([[1, 2, 3]], [4]))
+    original = load_or_sample_candidates(cfg, split, geo, n_neg=10, seed=0)
+    original_cache = next(tmp_path.rglob("*.npz"))
+
+    target = original["test"]["E1"][0, 0]
+    changed = Split(N, valid.histories, valid, queries([[1, 2, 3]], [target]))
+    updated = load_or_sample_candidates(cfg, changed, geo, n_neg=10, seed=0)
+
+    assert all(target not in updated["test"][protocol][0] for protocol in ("E1", "E2"))
+    np.testing.assert_array_equal(load_or_sample_candidates(cfg, split, geo, 10, 0)["test"]["E1"], original["test"]["E1"])
+    assert len(list(tmp_path.rglob("*.npz"))) == 2
+    original_cache.write_bytes(b"incomplete cache")
+    np.testing.assert_array_equal(load_or_sample_candidates(cfg, split, geo, 10, 0)["test"]["E1"], original["test"]["E1"])
+
+
 def test_evaluate_excludes_current_place_and_handles_out_of_radius_target():
     geo = line_geo(radius_km=0.5)    # 반경 안 ±4개
     scores = np.zeros(N + 1)
@@ -77,3 +96,14 @@ def test_evaluate_rejects_wrong_score_shape():
     geo = line_geo(radius_km=0.5)
     with pytest.raises(ValueError):
         evaluate(FixedScorer(np.zeros(N)), queries([[1, 2]], [3]), geo, {"E1": np.array([[4]]), "E2": np.array([[5]])})
+
+
+def test_catalog_unknown_target_is_a_miss_in_every_protocol():
+    geo = line_geo(radius_km=1)
+    scores = np.zeros(N + 1)
+    scores[0] = 100
+    q = queries([[29, 30]], [0])
+    cands = sample_candidates(q, geo, n_neg=5, rng=np.random.default_rng(0))
+    out = evaluate(FixedScorer(scores), q, geo, cands)
+    assert not out["in_candidates"].any()
+    assert out[["ndcg@10", "hr@10", "mrr"]].eq(0).all().all()

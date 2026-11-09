@@ -7,15 +7,18 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass
+from importlib.metadata import version
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 from sklearn.neighbors import BallTree
 
-from dongne_rec.config import city_dir, load_config
+from dongne_rec.config import city_dir, load_config, resolve_radius
+from dongne_rec.storage import arrays_fingerprint, fingerprint, read_npz_cache, save_npz
 
 EARTH_RADIUS_KM = 6371.0088
+NEIGHBORS_CACHE_VERSION = 1  # 이웃 생성 방식이 바뀌면 올립니다.
 
 
 def haversine_km(lat1, lon1, lat2, lon2) -> np.ndarray:
@@ -66,8 +69,18 @@ def radius_neighbors_csr(
     return indptr, indices
 
 
-def neighbors_path(cfg: dict, radius_km: float) -> Path:
-    return city_dir(cfg, "processed_dir") / f"geo_neighbors_R{radius_km:g}.npz"
+def neighbors_path(cfg: dict, radius_km: float, coords: tuple[np.ndarray, np.ndarray] | None = None) -> Path:
+    if coords is None:
+        coords = item_coords(pd.read_parquet(city_dir(cfg, "processed_dir") / "items.parquet"))
+    key = fingerprint({
+        "version": NEIGHBORS_CACHE_VERSION,
+        "coords": arrays_fingerprint(coords),
+        "radius_km": float(radius_km),
+        "earth_radius_km": EARTH_RADIUS_KM,
+        "numpy": np.__version__,
+        "scikit_learn": version("scikit-learn"),
+    })
+    return city_dir(cfg, "processed_dir") / "cache" / "geo" / f"R{radius_km:g}-{key}.npz"
 
 
 def load_neighbors(path: str | Path) -> tuple[np.ndarray, np.ndarray]:
@@ -75,13 +88,27 @@ def load_neighbors(path: str | Path) -> tuple[np.ndarray, np.ndarray]:
         return z["indptr"], z["indices"]
 
 
+def cached_neighbors(cfg: dict, radius_km: float, coords: tuple[np.ndarray, np.ndarray]) -> tuple[np.ndarray, np.ndarray]:
+    path = neighbors_path(cfg, radius_km, coords)
+    cached = read_npz_cache(path, ("indptr", "indices"))
+    if cached is not None:
+        indptr, indices = cached["indptr"], cached["indices"]
+        if (indptr.shape == (len(coords[0]) + 1,) and indices.ndim == 1
+                and np.issubdtype(indptr.dtype, np.integer) and np.issubdtype(indices.dtype, np.integer)
+                and indptr[0] == indptr[1] == 0 and indptr[-1] == len(indices)
+                and np.all(indptr[1:] >= indptr[:-1])
+                and np.all((indices >= 1) & (indices < len(coords[0])))):
+            return indptr, indices
+    indptr, indices = radius_neighbors_csr(*coords, radius_km)
+    save_npz(path, indptr=indptr, indices=indices, radius_km=radius_km)
+    return indptr, indices
+
+
 def build_neighbors(cfg: dict, radius_km: float) -> Path:
     items = pd.read_parquet(city_dir(cfg, "processed_dir") / "items.parquet")
-    lat, lon = item_coords(items)
-    indptr, indices = radius_neighbors_csr(lat, lon, radius_km)
-    out = neighbors_path(cfg, radius_km)
-    np.savez_compressed(out, indptr=indptr, indices=indices, radius_km=radius_km)
-    return out
+    coords = item_coords(items)
+    cached_neighbors(cfg, radius_km, coords)
+    return neighbors_path(cfg, radius_km, coords)
 
 
 @dataclass
@@ -109,13 +136,12 @@ class GeoIndex:
         return out
 
 
-def load_geo_index(cfg: dict, radius_km: float) -> GeoIndex:
-    """이웃 CSR이 없으면 만들어서 저장한 뒤 불러와요."""
-    path = neighbors_path(cfg, radius_km)
-    if not path.exists():
-        build_neighbors(cfg, radius_km)
-    lat, lon = item_coords(pd.read_parquet(city_dir(cfg, "processed_dir") / "items.parquet"))
-    indptr, indices = load_neighbors(path)
+def load_geo_index(cfg: dict, radius_km: float, *, items: pd.DataFrame | None = None) -> GeoIndex:
+    """같은 좌표와 반경에서 생성한 이웃 CSR을 재사용합니다."""
+    if items is None:
+        items = pd.read_parquet(city_dir(cfg, "processed_dir") / "items.parquet")
+    lat, lon = item_coords(items)
+    indptr, indices = cached_neighbors(cfg, radius_km, (lat, lon))
     return GeoIndex(radius_km, lat, lon, indptr, indices)
 
 
@@ -127,18 +153,14 @@ def main() -> None:
     args = parser.parse_args()
 
     cfg = load_config(args.config, city=args.city)
-    radius_km = args.radius_km if args.radius_km is not None else cfg["geo"]["radius_km"]
-    if radius_km is None:
-        parser.error("반경이 없어요. --radius-km을 주거나 config의 geo.radius_km을 채워 주세요 (make eda 결과 참고).")
-
-    out = build_neighbors(cfg, radius_km)
-    indptr, indices = load_neighbors(out)
-
-    deg = np.diff(indptr)[1:]
+    radius_km = resolve_radius(cfg, args.radius_km)
+    geo = load_geo_index(cfg, radius_km)
+    out = neighbors_path(cfg, radius_km, (geo.lat, geo.lon))
+    deg = np.diff(geo.indptr)[1:]
     print(
         f"[geo] {cfg['city']} R={radius_km:g}km: items={len(deg):,} "
         f"이웃 수 median={np.median(deg):.0f} p90={np.percentile(deg, 90):.0f} max={deg.max():,} "
-        f"| CSR {indices.nbytes / 1e6:.1f}MB → {out}"
+        f"| CSR {geo.indices.nbytes / 1e6:.1f}MB → {out}"
     )
 
 

@@ -14,6 +14,7 @@ def with_meta(per_query: pd.DataFrame, q: Queries) -> pd.DataFrame:
     qi = out["query"].to_numpy()
     out["user_idx"] = q.users[qi]
     out["is_repeat"] = q.is_repeat[qi]
+    out["is_cold"] = q.targets[qi] == 0
     out["gap_bucket"] = pd.cut(q.gap_h[qi], bins=GAP_BINS_H, labels=GAP_LABELS)
     return out
 
@@ -53,6 +54,6 @@ def breakdown_tables(per_query: pd.DataFrame, metric: str) -> dict[str, pd.DataF
     full["group"] = full["protocol"] + " " + np.where(full["is_repeat"], "재방문", "신규")
     by_gap = per_query[per_query["protocol"] == "E4"]
     return {
-        "repeat": pivot(full, metric, columns="group")[["E3 재방문", "E3 신규", "E4 재방문", "E4 신규"]],
+        "repeat": pivot(full, metric, columns="group").reindex(columns=["E3 재방문", "E3 신규", "E4 재방문", "E4 신규"]),
         "gap": pivot(by_gap, metric, columns="gap_bucket"),
     }

@@ -1,8 +1,10 @@
 import numpy as np
 import pandas as pd
+import pytest
 
 from conftest import make_raw
 from dongne_rec.data.preprocess import collapse_consecutive_duplicates, filter_until_stable, load_raw, preprocess
+from dongne_rec.data.split import load_split_inputs
 
 
 def test_load_raw_parses_utc_and_local_time_and_utf8(tmp_path):
@@ -65,3 +67,37 @@ def test_preprocess_ids_order_coords_and_category():
         assert g["ts_utc"].is_monotonic_increasing
         assert g["item_idx"].tolist() == [1, 2, 1, 2, 1, 2]
     assert stats["final"]["interactions"] == len(inter) == 12
+
+
+def test_global_time_preprocessing_keeps_catalog_and_histories_before_cutoffs(tmp_path, monkeypatch):
+    from dongne_rec.data import preprocess as module
+
+    raw = make_raw([
+        (1, "A", 0), (1, "B", 1), (1, "A", 2),
+        (2, "B", 0), (2, "A", 1), (2, "B", 2),
+        (1, "B", 3), (1, "A", 4), (1, "C", 5), (1, "B", 5),
+        (2, "C", 3), (2, "A", 5), (2, "B", 6),
+        (3, "A", 4), (3, "B", 5),
+    ])
+    t0 = raw["ts_utc"].min()
+    train_end, valid_end = t0 + pd.Timedelta(hours=3), t0 + pd.Timedelta(hours=5)
+    raw.loc[raw["ts_utc"] >= train_end, "lat"] = 55.0
+    monkeypatch.setattr(module, "load_raw", lambda path: raw)
+    cfg = {
+        "city": "TEST", "raw_dir": str(tmp_path), "processed_dir": str(tmp_path / "processed"),
+        "min_user_checkins": 2, "min_item_checkins": 2, "collapse_consecutive_duplicates": True,
+        "split": {"strategy": "global-time", "train_end": train_end.isoformat(), "valid_end": valid_end.isoformat()},
+    }
+    stats = module.run(cfg)
+    split, items, _ = load_split_inputs(cfg)
+    assert items["venue_id"].tolist() == ["A", "B"] and items["lat"].tolist() == [40.75, 40.75]
+    assert [h.tolist() for h in split.train] == [[1, 2, 1], [2, 1, 2]]
+    assert split.valid.targets.tolist() == [2, 0]
+    assert split.test.targets.tolist() == [0, 1]
+    assert [h.tolist() for h in split.test.histories] == [[1, 2, 1, 2, 1], [2, 1, 2]]
+    assert split.test.gap_h.tolist() == [1.0, 3.0]
+    assert stats["split"]["excluded_holdout_users"] == 1
+
+    changed = {**cfg, "split": {**cfg["split"], "train_end": (train_end - pd.Timedelta(hours=1)).isoformat()}}
+    with pytest.raises(ValueError, match="입력 파일"):
+        load_split_inputs(changed)

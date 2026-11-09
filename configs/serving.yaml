@@ -4,12 +4,14 @@ model:                       # 서빙할 학습 실행 (3일차 결론: E3 손�
 artifacts_dir: artifacts
 
 pipeline:
-  n_candidates: 200          # Stage 1-b가 남길 후보 수 N (반경 안이 N 이하면 생략)
-  query_last_n: 3            # Stage 1-b 쿼리 = 최근 n개 장소 임베딩 평균 (Transformer 없이)
-  max_radius_expansions: 3   # 반경 안 후보가 k개 미만이면 반경을 2배씩 넓히는 최대 횟수
-  retrieval: faiss           # faiss (IndexFlatIP + IDSelectorBatch) | numpy (반경 안 brute force)
+  retrieval: full            # full: 동네 전체 | faiss: FAISS 상위 N | numpy: NumPy 상위 N
+  radius_mode: fixed         # fixed: 지정 반경 | expand: 후보가 부족할 때 반경 확장
+  n_candidates: 200          # faiss/numpy가 재랭킹에 넘기는 최대 후보 수
+  query_last_n: 3            # 후보 축소에 사용할 최근 장소 임베딩 수
+  max_radius_expansions: 3   # expand에서 반경을 2배로 늘리는 최대 횟수
 
 bench:
   warmup: 100
   backends: [torch-cpu, torch-mps, onnx-fp32, onnx-int8]
   threads: [1, 0]            # 0 = 라이브러리 기본 스레드 수
+  retrieval_diagnostics: false  # FAISS·NumPy 후보 축소 비교, 후보 수 스윕, 합성 규모 실험

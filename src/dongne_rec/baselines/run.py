@@ -1,24 +1,22 @@
 """1일차: 베이스라인 4종(MostPop, GeoPop, PersonalFreq, ItemKNN)을 E1~E4로 평가해요.
 
 ItemKNN은 valid의 주 지표로 튜닝하고, 모든 모델은 test로 리포트해요.
-결과: results/baselines/{city}/R{r}/ summary.md, summary.json, per_query.parquet, itemknn_grid.csv
+결과: results/runs/{city}/R{r}/{run_id}/
 """
 from __future__ import annotations
 
 import argparse
 import itertools
-import json
-from pathlib import Path
 
 import pandas as pd
 
 from dongne_rec.baselines.itemknn import ItemKNN
 from dongne_rec.baselines.pop import GeoPop, MostPop, PersonalFreq
-from dongne_rec.config import load_config
-from dongne_rec.data.geo import load_geo_index
-from dongne_rec.data.split import load_split
+from dongne_rec.config import load_config, resolve_radius
 from dongne_rec.eval import report
-from dongne_rec.eval.protocols import PROTOCOLS, evaluate, load_or_sample_candidates
+from dongne_rec.eval.protocols import PROTOCOLS, evaluate
+from dongne_rec.experiments import load_evaluation, new_run
+from dongne_rec.storage import publish_directory, write_json
 
 
 def tune_itemknn(knn: ItemKNN, grid_cfg: dict, run_valid, metric: str, primary: str) -> tuple[ItemKNN, pd.DataFrame]:
@@ -47,7 +45,7 @@ def render(city: str, radius: float, ecfg: dict, per_query: pd.DataFrame, cands:
     inflation = ndcg[["E1"]].div(ndcg["E2"], axis=0).rename(columns={"E1": "E1 ÷ E2"})
     inflation["E3 ÷ E4"] = ndcg["E3"] / ndcg["E4"]
     near = per_query[per_query["query"].isin(per_query.loc[(per_query["protocol"] == "E4") & per_query["in_candidates"], "query"])]
-    ndcg_near = report.pivot(near, f"ndcg@{k}")[list(PROTOCOLS)]
+    ndcg_near = report.pivot(near, f"ndcg@{k}").reindex(index=ndcg.index, columns=PROTOCOLS)
     inflation_near = (ndcg_near["E1"] / ndcg_near["E2"]).rename("E1 ÷ E2").to_frame()
     grid_view = grid.set_index(grid.apply(lambda r: f"L={r['last_n']}, decay={r['decay']:g}, self={r['include_self']}", axis=1))
 
@@ -108,16 +106,16 @@ def main() -> None:
     parser.add_argument("--eval-config", default="configs/eval.yaml")
     parser.add_argument("--city")
     parser.add_argument("--radius-km", type=float)
+    parser.add_argument("--tag", help="비교에 사용할 실행 그룹 이름")
     args = parser.parse_args()
 
     cfg = load_config(args.config, city=args.city)
     ecfg = load_config(args.eval_config)
-    radius = args.radius_km if args.radius_km is not None else cfg["geo"]["radius_km"]
+    radius = resolve_radius(cfg, args.radius_km)
     ks, metric, primary = tuple(ecfg["ks"]), ecfg["primary"]["metric"], ecfg["primary"]["protocol"]
 
-    split = load_split(cfg)
-    geo = load_geo_index(cfg, radius)
-    cands = load_or_sample_candidates(cfg, split, geo, ecfg["n_sampled_negatives"], ecfg["seed"])
+    split, geo, cands, evaluation = load_evaluation(cfg, ecfg, radius)
+    out, metadata = new_run("baselines", cfg, ecfg, evaluation, tag=args.tag or None, device="cpu")
 
     def run(model, stage: str) -> pd.DataFrame:
         return evaluate(model, split.queries(stage), geo, cands[stage], ks, ecfg["batch_size"])
@@ -130,13 +128,15 @@ def main() -> None:
     per_query = pd.concat([run(m, "test").assign(model=m.name) for m in models], ignore_index=True)
     per_query = report.with_meta(per_query, split.test)
 
-    out = Path(ecfg["results_dir"]) / "baselines" / cfg["city"] / f"R{radius:g}"
-    out.mkdir(parents=True, exist_ok=True)
-    per_query.to_parquet(out / "per_query.parquet", index=False)
-    grid.to_csv(out / "itemknn_grid.csv", index=False)
     summary = {m: report.pivot(per_query, m)[list(PROTOCOLS)].to_dict(orient="index") for m in (*(f"{x}@{k}" for x in ("ndcg", "hr") for k in ks), "mrr")}
-    (out / "summary.json").write_text(json.dumps({"city": cfg["city"], "radius_km": radius, **summary}, ensure_ascii=False, indent=2), encoding="utf-8")
-    (out / "summary.md").write_text(render(cfg["city"], radius, ecfg, per_query, cands, grid, len(split.test)), encoding="utf-8")
+    with publish_directory(out) as staging:
+        per_query.to_parquet(staging / "per_query.parquet", index=False)
+        grid.to_csv(staging / "itemknn_grid.csv", index=False)
+        write_json(staging / "summary.json", {"city": cfg["city"], "radius_km": radius, "run_id": metadata["run_id"], **summary})
+        write_json(staging / "metadata.json", metadata)
+        (staging / "summary.md").write_text(
+            render(cfg["city"], radius, ecfg, per_query, cands, grid, len(split.test)), encoding="utf-8",
+        )
 
     print(f"[baselines] {cfg['city']} R={radius:g}km test {metric}")
     print(report.pivot(per_query, metric)[list(PROTOCOLS)].round(4).to_string())

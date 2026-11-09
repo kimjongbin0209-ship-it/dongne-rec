@@ -9,14 +9,17 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 import numpy as np
 import pandas as pd
 
 from dongne_rec.config import city_dir, load_config
 from dongne_rec.data.geo import haversine_km
+from dongne_rec.data.split import global_time_boundaries
 
 COLUMN_MAP = {
     "userId": "user_id",
@@ -155,17 +158,53 @@ def preprocess(
 
 def run(cfg: dict) -> dict:
     raw = load_raw(raw_path(cfg))
+    strategy = cfg.get("split", {}).get("strategy", "leave-one-out")
+    if strategy not in ("leave-one-out", "global-time"):
+        raise ValueError(f"지원하지 않는 분할입니다. {strategy}")
+    cutoffs = global_time_boundaries(cfg) if strategy == "global-time" else None
+    train = raw if cutoffs is None else raw[raw["ts_utc"] < cutoffs[0]]
+    if train.empty:
+        raise ValueError("학습 기간에 체크인이 없습니다.")
+    collapse = cfg["collapse_consecutive_duplicates"]
     interactions, items, users, stats = preprocess(
-        raw, cfg["min_user_checkins"], cfg["min_item_checkins"], cfg["collapse_consecutive_duplicates"]
+        train, cfg["min_user_checkins"], cfg["min_item_checkins"], collapse,
     )
     stats["source"] = raw_path(cfg).name
+    tables = {"interactions.parquet": interactions, "items.parquet": items, "users.parquet": users}
+    if cutoffs is not None:
+        train_end, valid_end = cutoffs
+        ordered = raw.sort_values(["user_id", "ts_utc"], kind="stable")
+        if collapse:
+            ordered = collapse_consecutive_duplicates(ordered)
+        later = ordered[ordered["ts_utc"] >= train_end]
+        eligible = later[later["user_id"].isin(users["user_id"])]
+        holdout = pd.DataFrame({
+            "user_idx": eligible["user_id"].map(users.set_index("user_id")["user_idx"]).astype(np.int32),
+            "item_idx": eligible["venue_id"].map(items.set_index("venue_id")["item_idx"]).fillna(0).astype(np.int32),
+            "ts_utc": eligible["ts_utc"],
+        })
+        tables["holdout.parquet"] = holdout
+        stats["split"] = {
+            "strategy": strategy, "train_end": train_end.isoformat(), "valid_end": valid_end.isoformat(),
+            "holdout_rows": len(holdout), "holdout_users": int(holdout["user_idx"].nunique()),
+            "excluded_holdout_users": int(later["user_id"].nunique() - holdout["user_idx"].nunique()),
+            "unknown_item_rows": int(holdout["item_idx"].eq(0).sum()),
+        }
 
     out = city_dir(cfg, "processed_dir")
     out.mkdir(parents=True, exist_ok=True)
-    interactions.to_parquet(out / "interactions.parquet", index=False)
-    items.to_parquet(out / "items.parquet", index=False)
-    users.to_parquet(out / "users.parquet", index=False)
-    (out / "stats.json").write_text(json.dumps(stats, ensure_ascii=False, indent=2), encoding="utf-8")
+    with TemporaryDirectory(dir=out, prefix=".pending-") as temp:
+        staging = Path(temp)
+        for name, frame in tables.items():
+            frame.to_parquet(staging / name, index=False)
+        if cutoffs is not None:
+            stats["split"]["inputs"] = {
+                name: hashlib.sha256((staging / name).read_bytes()).hexdigest()
+                for name in ("interactions.parquet", "items.parquet", "holdout.parquet")
+            }
+        (staging / "stats.json").write_text(json.dumps(stats, ensure_ascii=False, indent=2), encoding="utf-8")
+        for name in (*tables, "stats.json"):
+            (staging / name).replace(out / name)
     return stats
 
 

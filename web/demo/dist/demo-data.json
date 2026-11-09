@@ -1,0 +1,1835 @@
+{
+  "model": "SASRec-S2 (mixed)",
+  "backend": "onnx-int8",
+  "radii": [
+    2,
+    3,
+    5
+  ],
+  "profiles": [
+    {
+      "key": "midtown",
+      "label": "미드타운",
+      "borough": "MANHATTAN",
+      "history": [
+        "카페",
+        "서점",
+        "공원"
+      ],
+      "runs": {
+        "2": {
+          "full": {
+            "nearby": 2179,
+            "candidates": 2179,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Bookstore",
+                "km": 0.1,
+                "xy": [
+                  -0.0,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 2,
+                "category": "Train Station",
+                "km": 0.6,
+                "xy": [
+                  0.6,
+                  -0.2
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "Park",
+                "km": 1.5,
+                "xy": [
+                  -0.3,
+                  -1.4
+                ]
+              },
+              {
+                "ref": 4,
+                "category": "Electronics Store",
+                "km": 1.4,
+                "xy": [
+                  0.9,
+                  1.0
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Coffee Shop",
+                "km": 0.1,
+                "xy": [
+                  0.0,
+                  0.1
+                ]
+              },
+              {
+                "ref": 6,
+                "category": "Train Station",
+                "km": 0.9,
+                "xy": [
+                  -0.8,
+                  -0.5
+                ]
+              },
+              {
+                "ref": 7,
+                "category": "Bus Station",
+                "km": 0.7,
+                "xy": [
+                  -0.6,
+                  0.3
+                ]
+              },
+              {
+                "ref": 8,
+                "category": "Office",
+                "km": 0.2,
+                "xy": [
+                  -0.1,
+                  -0.2
+                ]
+              },
+              {
+                "ref": 9,
+                "category": "Seafood Restaurant",
+                "km": 0.6,
+                "xy": [
+                  0.5,
+                  -0.3
+                ]
+              },
+              {
+                "ref": 10,
+                "category": "Bar",
+                "km": 1.3,
+                "xy": [
+                  1.3,
+                  -0.2
+                ]
+              }
+            ]
+          },
+          "faiss": {
+            "nearby": 2179,
+            "candidates": 200,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Bookstore",
+                "km": 0.1,
+                "xy": [
+                  -0.0,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Coffee Shop",
+                "km": 0.1,
+                "xy": [
+                  0.0,
+                  0.1
+                ]
+              },
+              {
+                "ref": 8,
+                "category": "Office",
+                "km": 0.2,
+                "xy": [
+                  -0.1,
+                  -0.2
+                ]
+              },
+              {
+                "ref": 9,
+                "category": "Seafood Restaurant",
+                "km": 0.6,
+                "xy": [
+                  0.5,
+                  -0.3
+                ]
+              },
+              {
+                "ref": 10,
+                "category": "Bar",
+                "km": 1.3,
+                "xy": [
+                  1.3,
+                  -0.2
+                ]
+              },
+              {
+                "ref": 11,
+                "category": "Subway",
+                "km": 1.5,
+                "xy": [
+                  1.0,
+                  1.1
+                ]
+              },
+              {
+                "ref": 12,
+                "category": "Mexican Restaurant",
+                "km": 0.9,
+                "xy": [
+                  0.6,
+                  -0.7
+                ]
+              },
+              {
+                "ref": 13,
+                "category": "Library",
+                "km": 0.4,
+                "xy": [
+                  0.2,
+                  -0.3
+                ]
+              },
+              {
+                "ref": 14,
+                "category": "Subway",
+                "km": 0.4,
+                "xy": [
+                  -0.3,
+                  0.2
+                ]
+              },
+              {
+                "ref": 15,
+                "category": "Department Store",
+                "km": 0.4,
+                "xy": [
+                  0.1,
+                  -0.4
+                ]
+              }
+            ]
+          }
+        },
+        "3": {
+          "full": {
+            "nearby": 3114,
+            "candidates": 3114,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Bookstore",
+                "km": 0.1,
+                "xy": [
+                  -0.0,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 2,
+                "category": "Train Station",
+                "km": 0.6,
+                "xy": [
+                  0.6,
+                  -0.2
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "Park",
+                "km": 1.5,
+                "xy": [
+                  -0.3,
+                  -1.4
+                ]
+              },
+              {
+                "ref": 16,
+                "category": "Park",
+                "km": 2.2,
+                "xy": [
+                  -0.5,
+                  -2.2
+                ]
+              },
+              {
+                "ref": 4,
+                "category": "Electronics Store",
+                "km": 1.4,
+                "xy": [
+                  0.9,
+                  1.0
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Coffee Shop",
+                "km": 0.1,
+                "xy": [
+                  0.0,
+                  0.1
+                ]
+              },
+              {
+                "ref": 17,
+                "category": "Food & Drink Shop",
+                "km": 2.4,
+                "xy": [
+                  -0.3,
+                  -2.4
+                ]
+              },
+              {
+                "ref": 6,
+                "category": "Train Station",
+                "km": 0.9,
+                "xy": [
+                  -0.8,
+                  -0.5
+                ]
+              },
+              {
+                "ref": 7,
+                "category": "Bus Station",
+                "km": 0.7,
+                "xy": [
+                  -0.6,
+                  0.3
+                ]
+              },
+              {
+                "ref": 8,
+                "category": "Office",
+                "km": 0.2,
+                "xy": [
+                  -0.1,
+                  -0.2
+                ]
+              }
+            ]
+          },
+          "faiss": {
+            "nearby": 3114,
+            "candidates": 200,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Bookstore",
+                "km": 0.1,
+                "xy": [
+                  -0.0,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Coffee Shop",
+                "km": 0.1,
+                "xy": [
+                  0.0,
+                  0.1
+                ]
+              },
+              {
+                "ref": 8,
+                "category": "Office",
+                "km": 0.2,
+                "xy": [
+                  -0.1,
+                  -0.2
+                ]
+              },
+              {
+                "ref": 9,
+                "category": "Seafood Restaurant",
+                "km": 0.6,
+                "xy": [
+                  0.5,
+                  -0.3
+                ]
+              },
+              {
+                "ref": 10,
+                "category": "Bar",
+                "km": 1.3,
+                "xy": [
+                  1.3,
+                  -0.2
+                ]
+              },
+              {
+                "ref": 11,
+                "category": "Subway",
+                "km": 1.5,
+                "xy": [
+                  1.0,
+                  1.1
+                ]
+              },
+              {
+                "ref": 12,
+                "category": "Mexican Restaurant",
+                "km": 0.9,
+                "xy": [
+                  0.6,
+                  -0.7
+                ]
+              },
+              {
+                "ref": 13,
+                "category": "Library",
+                "km": 0.4,
+                "xy": [
+                  0.2,
+                  -0.3
+                ]
+              },
+              {
+                "ref": 18,
+                "category": "Bakery",
+                "km": 0.1,
+                "xy": [
+                  -0.0,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 19,
+                "category": "Bank",
+                "km": 0.3,
+                "xy": [
+                  -0.3,
+                  -0.1
+                ]
+              }
+            ]
+          }
+        },
+        "5": {
+          "full": {
+            "nearby": 4697,
+            "candidates": 4697,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Bookstore",
+                "km": 0.1,
+                "xy": [
+                  -0.0,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 2,
+                "category": "Train Station",
+                "km": 0.6,
+                "xy": [
+                  0.6,
+                  -0.2
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "Park",
+                "km": 1.5,
+                "xy": [
+                  -0.3,
+                  -1.4
+                ]
+              },
+              {
+                "ref": 16,
+                "category": "Park",
+                "km": 2.2,
+                "xy": [
+                  -0.5,
+                  -2.2
+                ]
+              },
+              {
+                "ref": 4,
+                "category": "Electronics Store",
+                "km": 1.4,
+                "xy": [
+                  0.9,
+                  1.0
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Coffee Shop",
+                "km": 0.1,
+                "xy": [
+                  0.0,
+                  0.1
+                ]
+              },
+              {
+                "ref": 17,
+                "category": "Food & Drink Shop",
+                "km": 2.4,
+                "xy": [
+                  -0.3,
+                  -2.4
+                ]
+              },
+              {
+                "ref": 6,
+                "category": "Train Station",
+                "km": 0.9,
+                "xy": [
+                  -0.8,
+                  -0.5
+                ]
+              },
+              {
+                "ref": 7,
+                "category": "Bus Station",
+                "km": 0.7,
+                "xy": [
+                  -0.6,
+                  0.3
+                ]
+              },
+              {
+                "ref": 8,
+                "category": "Office",
+                "km": 0.2,
+                "xy": [
+                  -0.1,
+                  -0.2
+                ]
+              }
+            ]
+          },
+          "faiss": {
+            "nearby": 4697,
+            "candidates": 200,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Bookstore",
+                "km": 0.1,
+                "xy": [
+                  -0.0,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Coffee Shop",
+                "km": 0.1,
+                "xy": [
+                  0.0,
+                  0.1
+                ]
+              },
+              {
+                "ref": 8,
+                "category": "Office",
+                "km": 0.2,
+                "xy": [
+                  -0.1,
+                  -0.2
+                ]
+              },
+              {
+                "ref": 9,
+                "category": "Seafood Restaurant",
+                "km": 0.6,
+                "xy": [
+                  0.5,
+                  -0.3
+                ]
+              },
+              {
+                "ref": 10,
+                "category": "Bar",
+                "km": 1.3,
+                "xy": [
+                  1.3,
+                  -0.2
+                ]
+              },
+              {
+                "ref": 20,
+                "category": "Department Store",
+                "km": 3.9,
+                "xy": [
+                  -1.3,
+                  -3.6
+                ]
+              },
+              {
+                "ref": 12,
+                "category": "Mexican Restaurant",
+                "km": 0.9,
+                "xy": [
+                  0.6,
+                  -0.7
+                ]
+              },
+              {
+                "ref": 13,
+                "category": "Library",
+                "km": 0.4,
+                "xy": [
+                  0.2,
+                  -0.3
+                ]
+              },
+              {
+                "ref": 18,
+                "category": "Bakery",
+                "km": 0.1,
+                "xy": [
+                  -0.0,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 19,
+                "category": "Bank",
+                "km": 0.3,
+                "xy": [
+                  -0.3,
+                  -0.1
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "key": "east-village",
+      "label": "이스트 빌리지",
+      "borough": "MANHATTAN",
+      "history": [
+        "베이커리",
+        "음반점",
+        "피자 가게"
+      ],
+      "runs": {
+        "2": {
+          "full": {
+            "nearby": 1725,
+            "candidates": 1725,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Bakery",
+                "km": 0.3,
+                "xy": [
+                  0.1,
+                  0.3
+                ]
+              },
+              {
+                "ref": 2,
+                "category": "Park",
+                "km": 1.0,
+                "xy": [
+                  -0.4,
+                  0.9
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "Record Shop",
+                "km": 1.5,
+                "xy": [
+                  -1.4,
+                  0.4
+                ]
+              },
+              {
+                "ref": 4,
+                "category": "Park",
+                "km": 1.1,
+                "xy": [
+                  -1.0,
+                  0.4
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Coffee Shop",
+                "km": 1.2,
+                "xy": [
+                  -0.4,
+                  1.1
+                ]
+              },
+              {
+                "ref": 6,
+                "category": "Bookstore",
+                "km": 0.8,
+                "xy": [
+                  -0.5,
+                  0.7
+                ]
+              },
+              {
+                "ref": 7,
+                "category": "Burger Joint",
+                "km": 0.7,
+                "xy": [
+                  -0.2,
+                  0.7
+                ]
+              },
+              {
+                "ref": 8,
+                "category": "Music Venue",
+                "km": 1.4,
+                "xy": [
+                  0.0,
+                  1.4
+                ]
+              },
+              {
+                "ref": 9,
+                "category": "Gym / Fitness Center",
+                "km": 0.7,
+                "xy": [
+                  -0.7,
+                  0.1
+                ]
+              },
+              {
+                "ref": 10,
+                "category": "Salon / Barbershop",
+                "km": 0.7,
+                "xy": [
+                  -0.6,
+                  0.4
+                ]
+              }
+            ]
+          },
+          "faiss": {
+            "nearby": 1725,
+            "candidates": 200,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Bakery",
+                "km": 0.3,
+                "xy": [
+                  0.1,
+                  0.3
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "Record Shop",
+                "km": 1.5,
+                "xy": [
+                  -1.4,
+                  0.4
+                ]
+              },
+              {
+                "ref": 7,
+                "category": "Burger Joint",
+                "km": 0.7,
+                "xy": [
+                  -0.2,
+                  0.7
+                ]
+              },
+              {
+                "ref": 9,
+                "category": "Gym / Fitness Center",
+                "km": 0.7,
+                "xy": [
+                  -0.7,
+                  0.1
+                ]
+              },
+              {
+                "ref": 10,
+                "category": "Salon / Barbershop",
+                "km": 0.7,
+                "xy": [
+                  -0.6,
+                  0.4
+                ]
+              },
+              {
+                "ref": 11,
+                "category": "Electronics Store",
+                "km": 0.7,
+                "xy": [
+                  -0.5,
+                  0.4
+                ]
+              },
+              {
+                "ref": 12,
+                "category": "Asian Restaurant",
+                "km": 0.4,
+                "xy": [
+                  -0.3,
+                  0.3
+                ]
+              },
+              {
+                "ref": 13,
+                "category": "Falafel Restaurant",
+                "km": 0.4,
+                "xy": [
+                  -0.3,
+                  0.2
+                ]
+              },
+              {
+                "ref": 14,
+                "category": "Pizza Place",
+                "km": 0.5,
+                "xy": [
+                  0.3,
+                  0.5
+                ]
+              },
+              {
+                "ref": 15,
+                "category": "Mexican Restaurant",
+                "km": 0.9,
+                "xy": [
+                  -0.3,
+                  0.8
+                ]
+              }
+            ]
+          }
+        },
+        "3": {
+          "full": {
+            "nearby": 2925,
+            "candidates": 2925,
+            "items": [
+              {
+                "ref": 16,
+                "category": "Train Station",
+                "km": 2.7,
+                "xy": [
+                  -0.7,
+                  2.6
+                ]
+              },
+              {
+                "ref": 1,
+                "category": "Bakery",
+                "km": 0.3,
+                "xy": [
+                  0.1,
+                  0.3
+                ]
+              },
+              {
+                "ref": 2,
+                "category": "Park",
+                "km": 1.0,
+                "xy": [
+                  -0.4,
+                  0.9
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "Record Shop",
+                "km": 1.5,
+                "xy": [
+                  -1.4,
+                  0.4
+                ]
+              },
+              {
+                "ref": 17,
+                "category": "Subway",
+                "km": 2.7,
+                "xy": [
+                  -0.4,
+                  2.7
+                ]
+              },
+              {
+                "ref": 4,
+                "category": "Park",
+                "km": 1.1,
+                "xy": [
+                  -1.0,
+                  0.4
+                ]
+              },
+              {
+                "ref": 18,
+                "category": "Train Station",
+                "km": 2.5,
+                "xy": [
+                  -0.2,
+                  2.5
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Coffee Shop",
+                "km": 1.2,
+                "xy": [
+                  -0.4,
+                  1.1
+                ]
+              },
+              {
+                "ref": 6,
+                "category": "Bookstore",
+                "km": 0.8,
+                "xy": [
+                  -0.5,
+                  0.7
+                ]
+              },
+              {
+                "ref": 7,
+                "category": "Burger Joint",
+                "km": 0.7,
+                "xy": [
+                  -0.2,
+                  0.7
+                ]
+              }
+            ]
+          },
+          "faiss": {
+            "nearby": 2925,
+            "candidates": 200,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Bakery",
+                "km": 0.3,
+                "xy": [
+                  0.1,
+                  0.3
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "Record Shop",
+                "km": 1.5,
+                "xy": [
+                  -1.4,
+                  0.4
+                ]
+              },
+              {
+                "ref": 17,
+                "category": "Subway",
+                "km": 2.7,
+                "xy": [
+                  -0.4,
+                  2.7
+                ]
+              },
+              {
+                "ref": 9,
+                "category": "Gym / Fitness Center",
+                "km": 0.7,
+                "xy": [
+                  -0.7,
+                  0.1
+                ]
+              },
+              {
+                "ref": 10,
+                "category": "Salon / Barbershop",
+                "km": 0.7,
+                "xy": [
+                  -0.6,
+                  0.4
+                ]
+              },
+              {
+                "ref": 11,
+                "category": "Electronics Store",
+                "km": 0.7,
+                "xy": [
+                  -0.5,
+                  0.4
+                ]
+              },
+              {
+                "ref": 12,
+                "category": "Asian Restaurant",
+                "km": 0.4,
+                "xy": [
+                  -0.3,
+                  0.3
+                ]
+              },
+              {
+                "ref": 14,
+                "category": "Pizza Place",
+                "km": 0.5,
+                "xy": [
+                  0.3,
+                  0.5
+                ]
+              },
+              {
+                "ref": 15,
+                "category": "Mexican Restaurant",
+                "km": 0.9,
+                "xy": [
+                  -0.3,
+                  0.8
+                ]
+              },
+              {
+                "ref": 19,
+                "category": "Music Venue",
+                "km": 0.6,
+                "xy": [
+                  -0.3,
+                  0.5
+                ]
+              }
+            ]
+          }
+        },
+        "5": {
+          "full": {
+            "nearby": 4772,
+            "candidates": 4772,
+            "items": [
+              {
+                "ref": 16,
+                "category": "Train Station",
+                "km": 2.7,
+                "xy": [
+                  -0.7,
+                  2.6
+                ]
+              },
+              {
+                "ref": 1,
+                "category": "Bakery",
+                "km": 0.3,
+                "xy": [
+                  0.1,
+                  0.3
+                ]
+              },
+              {
+                "ref": 2,
+                "category": "Park",
+                "km": 1.0,
+                "xy": [
+                  -0.4,
+                  0.9
+                ]
+              },
+              {
+                "ref": 20,
+                "category": "Convention Center",
+                "km": 3.6,
+                "xy": [
+                  -1.3,
+                  3.3
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "Record Shop",
+                "km": 1.5,
+                "xy": [
+                  -1.4,
+                  0.4
+                ]
+              },
+              {
+                "ref": 17,
+                "category": "Subway",
+                "km": 2.7,
+                "xy": [
+                  -0.4,
+                  2.7
+                ]
+              },
+              {
+                "ref": 4,
+                "category": "Park",
+                "km": 1.1,
+                "xy": [
+                  -1.0,
+                  0.4
+                ]
+              },
+              {
+                "ref": 18,
+                "category": "Train Station",
+                "km": 2.5,
+                "xy": [
+                  -0.2,
+                  2.5
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Coffee Shop",
+                "km": 1.2,
+                "xy": [
+                  -0.4,
+                  1.1
+                ]
+              },
+              {
+                "ref": 6,
+                "category": "Bookstore",
+                "km": 0.8,
+                "xy": [
+                  -0.5,
+                  0.7
+                ]
+              }
+            ]
+          },
+          "faiss": {
+            "nearby": 4772,
+            "candidates": 200,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Bakery",
+                "km": 0.3,
+                "xy": [
+                  0.1,
+                  0.3
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "Record Shop",
+                "km": 1.5,
+                "xy": [
+                  -1.4,
+                  0.4
+                ]
+              },
+              {
+                "ref": 21,
+                "category": "Subway",
+                "km": 4.5,
+                "xy": [
+                  1.6,
+                  4.2
+                ]
+              },
+              {
+                "ref": 22,
+                "category": "Seafood Restaurant",
+                "km": 3.2,
+                "xy": [
+                  -0.1,
+                  3.2
+                ]
+              },
+              {
+                "ref": 9,
+                "category": "Gym / Fitness Center",
+                "km": 0.7,
+                "xy": [
+                  -0.7,
+                  0.1
+                ]
+              },
+              {
+                "ref": 10,
+                "category": "Salon / Barbershop",
+                "km": 0.7,
+                "xy": [
+                  -0.6,
+                  0.4
+                ]
+              },
+              {
+                "ref": 11,
+                "category": "Electronics Store",
+                "km": 0.7,
+                "xy": [
+                  -0.5,
+                  0.4
+                ]
+              },
+              {
+                "ref": 12,
+                "category": "Asian Restaurant",
+                "km": 0.4,
+                "xy": [
+                  -0.3,
+                  0.3
+                ]
+              },
+              {
+                "ref": 14,
+                "category": "Pizza Place",
+                "km": 0.5,
+                "xy": [
+                  0.3,
+                  0.5
+                ]
+              },
+              {
+                "ref": 15,
+                "category": "Mexican Restaurant",
+                "km": 0.9,
+                "xy": [
+                  -0.3,
+                  0.8
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "key": "williamsburg",
+      "label": "윌리엄스버그",
+      "borough": "BROOKLYN",
+      "history": [
+        "카페",
+        "빈티지 숍",
+        "바"
+      ],
+      "runs": {
+        "2": {
+          "full": {
+            "nearby": 283,
+            "candidates": 283,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Coffee Shop",
+                "km": 0.2,
+                "xy": [
+                  0.1,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 2,
+                "category": "Hotel",
+                "km": 0.9,
+                "xy": [
+                  -0.0,
+                  0.9
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "American Restaurant",
+                "km": 0.1,
+                "xy": [
+                  -0.1,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 4,
+                "category": "Flea Market",
+                "km": 0.9,
+                "xy": [
+                  -0.4,
+                  0.7
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Bar",
+                "km": 0.8,
+                "xy": [
+                  -0.0,
+                  0.8
+                ]
+              },
+              {
+                "ref": 6,
+                "category": "Coffee Shop",
+                "km": 0.3,
+                "xy": [
+                  0.2,
+                  0.2
+                ]
+              },
+              {
+                "ref": 7,
+                "category": "Gym / Fitness Center",
+                "km": 0.4,
+                "xy": [
+                  -0.3,
+                  0.3
+                ]
+              },
+              {
+                "ref": 8,
+                "category": "Bar",
+                "km": 0.6,
+                "xy": [
+                  -0.6,
+                  0.0
+                ]
+              },
+              {
+                "ref": 9,
+                "category": "French Restaurant",
+                "km": 0.8,
+                "xy": [
+                  0.3,
+                  -0.8
+                ]
+              },
+              {
+                "ref": 10,
+                "category": "Bar",
+                "km": 0.3,
+                "xy": [
+                  -0.3,
+                  -0.1
+                ]
+              }
+            ]
+          },
+          "faiss": {
+            "nearby": 283,
+            "candidates": 200,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Coffee Shop",
+                "km": 0.2,
+                "xy": [
+                  0.1,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 2,
+                "category": "Hotel",
+                "km": 0.9,
+                "xy": [
+                  -0.0,
+                  0.9
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "American Restaurant",
+                "km": 0.1,
+                "xy": [
+                  -0.1,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Bar",
+                "km": 0.8,
+                "xy": [
+                  -0.0,
+                  0.8
+                ]
+              },
+              {
+                "ref": 6,
+                "category": "Coffee Shop",
+                "km": 0.3,
+                "xy": [
+                  0.2,
+                  0.2
+                ]
+              },
+              {
+                "ref": 7,
+                "category": "Gym / Fitness Center",
+                "km": 0.4,
+                "xy": [
+                  -0.3,
+                  0.3
+                ]
+              },
+              {
+                "ref": 8,
+                "category": "Bar",
+                "km": 0.6,
+                "xy": [
+                  -0.6,
+                  0.0
+                ]
+              },
+              {
+                "ref": 9,
+                "category": "French Restaurant",
+                "km": 0.8,
+                "xy": [
+                  0.3,
+                  -0.8
+                ]
+              },
+              {
+                "ref": 10,
+                "category": "Bar",
+                "km": 0.3,
+                "xy": [
+                  -0.3,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 11,
+                "category": "Southern / Soul Food Restaurant",
+                "km": 0.7,
+                "xy": [
+                  0.7,
+                  0.1
+                ]
+              }
+            ]
+          }
+        },
+        "3": {
+          "full": {
+            "nearby": 753,
+            "candidates": 753,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Coffee Shop",
+                "km": 0.2,
+                "xy": [
+                  0.1,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 2,
+                "category": "Hotel",
+                "km": 0.9,
+                "xy": [
+                  -0.0,
+                  0.9
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "American Restaurant",
+                "km": 0.1,
+                "xy": [
+                  -0.1,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 4,
+                "category": "Flea Market",
+                "km": 0.9,
+                "xy": [
+                  -0.4,
+                  0.7
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Bar",
+                "km": 0.8,
+                "xy": [
+                  -0.0,
+                  0.8
+                ]
+              },
+              {
+                "ref": 6,
+                "category": "Coffee Shop",
+                "km": 0.3,
+                "xy": [
+                  0.2,
+                  0.2
+                ]
+              },
+              {
+                "ref": 7,
+                "category": "Gym / Fitness Center",
+                "km": 0.4,
+                "xy": [
+                  -0.3,
+                  0.3
+                ]
+              },
+              {
+                "ref": 8,
+                "category": "Bar",
+                "km": 0.6,
+                "xy": [
+                  -0.6,
+                  0.0
+                ]
+              },
+              {
+                "ref": 9,
+                "category": "French Restaurant",
+                "km": 0.8,
+                "xy": [
+                  0.3,
+                  -0.8
+                ]
+              },
+              {
+                "ref": 10,
+                "category": "Bar",
+                "km": 0.3,
+                "xy": [
+                  -0.3,
+                  -0.1
+                ]
+              }
+            ]
+          },
+          "faiss": {
+            "nearby": 753,
+            "candidates": 200,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Coffee Shop",
+                "km": 0.2,
+                "xy": [
+                  0.1,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 2,
+                "category": "Hotel",
+                "km": 0.9,
+                "xy": [
+                  -0.0,
+                  0.9
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "American Restaurant",
+                "km": 0.1,
+                "xy": [
+                  -0.1,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Bar",
+                "km": 0.8,
+                "xy": [
+                  -0.0,
+                  0.8
+                ]
+              },
+              {
+                "ref": 6,
+                "category": "Coffee Shop",
+                "km": 0.3,
+                "xy": [
+                  0.2,
+                  0.2
+                ]
+              },
+              {
+                "ref": 7,
+                "category": "Gym / Fitness Center",
+                "km": 0.4,
+                "xy": [
+                  -0.3,
+                  0.3
+                ]
+              },
+              {
+                "ref": 8,
+                "category": "Bar",
+                "km": 0.6,
+                "xy": [
+                  -0.6,
+                  0.0
+                ]
+              },
+              {
+                "ref": 9,
+                "category": "French Restaurant",
+                "km": 0.8,
+                "xy": [
+                  0.3,
+                  -0.8
+                ]
+              },
+              {
+                "ref": 12,
+                "category": "Bar",
+                "km": 1.1,
+                "xy": [
+                  1.1,
+                  0.0
+                ]
+              },
+              {
+                "ref": 13,
+                "category": "Bar",
+                "km": 0.6,
+                "xy": [
+                  0.2,
+                  0.6
+                ]
+              }
+            ]
+          }
+        },
+        "5": {
+          "full": {
+            "nearby": 3648,
+            "candidates": 3648,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Coffee Shop",
+                "km": 0.2,
+                "xy": [
+                  0.1,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 14,
+                "category": "Market",
+                "km": 4.1,
+                "xy": [
+                  -2.6,
+                  3.1
+                ]
+              },
+              {
+                "ref": 2,
+                "category": "Hotel",
+                "km": 0.9,
+                "xy": [
+                  -0.0,
+                  0.9
+                ]
+              },
+              {
+                "ref": 15,
+                "category": "Park",
+                "km": 3.6,
+                "xy": [
+                  -2.7,
+                  2.4
+                ]
+              },
+              {
+                "ref": 16,
+                "category": "Movie Theater",
+                "km": 3.5,
+                "xy": [
+                  -2.7,
+                  2.2
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "American Restaurant",
+                "km": 0.1,
+                "xy": [
+                  -0.1,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 17,
+                "category": "Bar",
+                "km": 3.8,
+                "xy": [
+                  -3.5,
+                  1.6
+                ]
+              },
+              {
+                "ref": 4,
+                "category": "Flea Market",
+                "km": 0.9,
+                "xy": [
+                  -0.4,
+                  0.7
+                ]
+              },
+              {
+                "ref": 18,
+                "category": "Fried Chicken Joint",
+                "km": 4.2,
+                "xy": [
+                  -2.6,
+                  3.2
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Bar",
+                "km": 0.8,
+                "xy": [
+                  -0.0,
+                  0.8
+                ]
+              }
+            ]
+          },
+          "faiss": {
+            "nearby": 3648,
+            "candidates": 200,
+            "items": [
+              {
+                "ref": 1,
+                "category": "Coffee Shop",
+                "km": 0.2,
+                "xy": [
+                  0.1,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 2,
+                "category": "Hotel",
+                "km": 0.9,
+                "xy": [
+                  -0.0,
+                  0.9
+                ]
+              },
+              {
+                "ref": 3,
+                "category": "American Restaurant",
+                "km": 0.1,
+                "xy": [
+                  -0.1,
+                  -0.1
+                ]
+              },
+              {
+                "ref": 5,
+                "category": "Bar",
+                "km": 0.8,
+                "xy": [
+                  -0.0,
+                  0.8
+                ]
+              },
+              {
+                "ref": 6,
+                "category": "Coffee Shop",
+                "km": 0.3,
+                "xy": [
+                  0.2,
+                  0.2
+                ]
+              },
+              {
+                "ref": 19,
+                "category": "Office",
+                "km": 3.8,
+                "xy": [
+                  -2.4,
+                  3.0
+                ]
+              },
+              {
+                "ref": 7,
+                "category": "Gym / Fitness Center",
+                "km": 0.4,
+                "xy": [
+                  -0.3,
+                  0.3
+                ]
+              },
+              {
+                "ref": 8,
+                "category": "Bar",
+                "km": 0.6,
+                "xy": [
+                  -0.6,
+                  0.0
+                ]
+              },
+              {
+                "ref": 9,
+                "category": "French Restaurant",
+                "km": 0.8,
+                "xy": [
+                  0.3,
+                  -0.8
+                ]
+              },
+              {
+                "ref": 20,
+                "category": "Office",
+                "km": 3.5,
+                "xy": [
+                  -3.2,
+                  1.3
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "benchmark": {
+    "cpu": "Apple M4 Pro",
+    "requests": 18000,
+    "conditions": [
+      {
+        "policy": "full",
+        "concurrency": 1,
+        "p99": 6.54,
+        "rps": 447.8
+      },
+      {
+        "policy": "faiss",
+        "concurrency": 1,
+        "p99": 5.71,
+        "rps": 474.8
+      },
+      {
+        "policy": "full",
+        "concurrency": 4,
+        "p99": 8.51,
+        "rps": 1022.7
+      },
+      {
+        "policy": "faiss",
+        "concurrency": 4,
+        "p99": 8.35,
+        "rps": 973.3
+      },
+      {
+        "policy": "full",
+        "concurrency": 16,
+        "p99": 194.88,
+        "rps": 548.7
+      },
+      {
+        "policy": "faiss",
+        "concurrency": 16,
+        "p99": 226.43,
+        "rps": 568.7
+      }
+    ]
+  }
+}

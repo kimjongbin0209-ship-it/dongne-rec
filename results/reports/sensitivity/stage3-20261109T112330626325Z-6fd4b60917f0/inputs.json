@@ -1,0 +1,1634 @@
+{
+  "runs": [
+    {
+      "path": "results/runs/NYC/R2/baselines-28c6413f7dc7-20261109T102413285134Z-4f64d7f24f7d",
+      "run_id": "baselines-28c6413f7dc7-20261109T102413285134Z-4f64d7f24f7d",
+      "city": "NYC",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "ab8c3972fbf9fcf1c546b1b00662f01e6f4387fa0a8b38b4d66d05dc200cad3b",
+      "kind": "baselines",
+      "device": "cpu",
+      "sampler": null,
+      "seed": null,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R2/random_s0-4a3222b65a6d-20261109T102153301746Z-d40e7340774f",
+      "run_id": "random_s0-4a3222b65a6d-20261109T102153301746Z-d40e7340774f",
+      "city": "NYC",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "ab8c3972fbf9fcf1c546b1b00662f01e6f4387fa0a8b38b4d66d05dc200cad3b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R2/random_s1-00c1d852137d-20261109T104707824427Z-1826f11c5237",
+      "run_id": "random_s1-00c1d852137d-20261109T104707824427Z-1826f11c5237",
+      "city": "NYC",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "ab8c3972fbf9fcf1c546b1b00662f01e6f4387fa0a8b38b4d66d05dc200cad3b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R2/random_s2-e41218dca79b-20261109T110548685000Z-0cdbce693d3c",
+      "run_id": "random_s2-e41218dca79b-20261109T110548685000Z-0cdbce693d3c",
+      "city": "NYC",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "ab8c3972fbf9fcf1c546b1b00662f01e6f4387fa0a8b38b4d66d05dc200cad3b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R2/geo_s0-ac7973516f2a-20261109T102229152237Z-70c78e4ff59e",
+      "run_id": "geo_s0-ac7973516f2a-20261109T102229152237Z-70c78e4ff59e",
+      "city": "NYC",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "ab8c3972fbf9fcf1c546b1b00662f01e6f4387fa0a8b38b4d66d05dc200cad3b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R2/geo_s1-07c95a7b9f06-20261109T104801324617Z-5bed45094f99",
+      "run_id": "geo_s1-07c95a7b9f06-20261109T104801324617Z-5bed45094f99",
+      "city": "NYC",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "ab8c3972fbf9fcf1c546b1b00662f01e6f4387fa0a8b38b4d66d05dc200cad3b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R2/geo_s2-c1f45c721abf-20261109T110626343824Z-68c1bcfb4423",
+      "run_id": "geo_s2-c1f45c721abf-20261109T110626343824Z-68c1bcfb4423",
+      "city": "NYC",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "ab8c3972fbf9fcf1c546b1b00662f01e6f4387fa0a8b38b4d66d05dc200cad3b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R2/mixed_s0-7ac4f20530b9-20261109T102316910160Z-41c100296cfb",
+      "run_id": "mixed_s0-7ac4f20530b9-20261109T102316910160Z-41c100296cfb",
+      "city": "NYC",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "ab8c3972fbf9fcf1c546b1b00662f01e6f4387fa0a8b38b4d66d05dc200cad3b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R2/mixed_s1-c29e59ef868c-20261109T104901372031Z-e9f3d88a9f62",
+      "run_id": "mixed_s1-c29e59ef868c-20261109T104901372031Z-e9f3d88a9f62",
+      "city": "NYC",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "ab8c3972fbf9fcf1c546b1b00662f01e6f4387fa0a8b38b4d66d05dc200cad3b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R2/mixed_s2-344f30ba5549-20261109T110707681448Z-bcfadb5fc9f1",
+      "run_id": "mixed_s2-344f30ba5549-20261109T110707681448Z-bcfadb5fc9f1",
+      "city": "NYC",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "ab8c3972fbf9fcf1c546b1b00662f01e6f4387fa0a8b38b4d66d05dc200cad3b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/baselines-bb311d029fa1-20261109T102418891786Z-7fa04b6b4ba9",
+      "run_id": "baselines-bb311d029fa1-20261109T102418891786Z-7fa04b6b4ba9",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "baselines",
+      "device": "cpu",
+      "sampler": null,
+      "seed": null,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/random_s0-799cce541fa2-20261109T102719039772Z-cbea919e472c",
+      "run_id": "random_s0-799cce541fa2-20261109T102719039772Z-cbea919e472c",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 0,
+      "source_checkpoint": "results/sasrec/NYC/R3/random_s0/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/NYC/R3/random_s1-ba9552e0b5c7-20261109T102719729191Z-4881a0ffd16f",
+      "run_id": "random_s1-ba9552e0b5c7-20261109T102719729191Z-4881a0ffd16f",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 1,
+      "source_checkpoint": "results/sasrec/NYC/R3/random_s1/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/NYC/R3/random_s2-91e4d664b639-20261109T102720391658Z-48e632fc570a",
+      "run_id": "random_s2-91e4d664b639-20261109T102720391658Z-48e632fc570a",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 2,
+      "source_checkpoint": "results/sasrec/NYC/R3/random_s2/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/NYC/R3/geo_s0-b3902a87872c-20261109T102721052747Z-f7ae81f95a92",
+      "run_id": "geo_s0-b3902a87872c-20261109T102721052747Z-f7ae81f95a92",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 0,
+      "source_checkpoint": "results/sasrec/NYC/R3/geo_s0/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/NYC/R3/geo_s1-e9e9a0da9c5a-20261109T102721670863Z-3901ed8cf43c",
+      "run_id": "geo_s1-e9e9a0da9c5a-20261109T102721670863Z-3901ed8cf43c",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 1,
+      "source_checkpoint": "results/sasrec/NYC/R3/geo_s1/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/NYC/R3/geo_s2-616ddaf26b06-20261109T102722316011Z-49bc8a2f87a8",
+      "run_id": "geo_s2-616ddaf26b06-20261109T102722316011Z-49bc8a2f87a8",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 2,
+      "source_checkpoint": "results/sasrec/NYC/R3/geo_s2/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/NYC/R3/mixed_s0-2170879ce81e-20261109T102722951899Z-d73016762b23",
+      "run_id": "mixed_s0-2170879ce81e-20261109T102722951899Z-d73016762b23",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 0,
+      "source_checkpoint": "results/sasrec/NYC/R3/mixed_s0/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/NYC/R3/mixed_s1-d90db5860fd8-20261109T102723591609Z-289a9d2da2c4",
+      "run_id": "mixed_s1-d90db5860fd8-20261109T102723591609Z-289a9d2da2c4",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 1,
+      "source_checkpoint": "results/sasrec/NYC/R3/mixed_s1/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/NYC/R3/mixed_s2-e74e75baed01-20261109T102724291557Z-64b59efae365",
+      "run_id": "mixed_s2-e74e75baed01-20261109T102724291557Z-64b59efae365",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 2,
+      "source_checkpoint": "results/sasrec/NYC/R3/mixed_s2/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/NYC/R3/mixed_s0-d7da585a99f1-20261109T102628821474Z-3c4751920f9d",
+      "run_id": "mixed_s0-d7da585a99f1-20261109T102628821474Z-3c4751920f9d",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/mixed_s1-cd847e2206ab-20261109T105200389929Z-bfc6f259daab",
+      "run_id": "mixed_s1-cd847e2206ab-20261109T105200389929Z-bfc6f259daab",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/mixed_s2-b365b6d55bfd-20261109T110935092582Z-4110d215d43c",
+      "run_id": "mixed_s2-b365b6d55bfd-20261109T110935092582Z-4110d215d43c",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/mixed_s0-94989cb102ee-20261109T102730593114Z-9c62a9b5dd3f",
+      "run_id": "mixed_s0-94989cb102ee-20261109T102730593114Z-9c62a9b5dd3f",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/mixed_s1-b31244f8bd0c-20261109T105253047679Z-286973750bc4",
+      "run_id": "mixed_s1-b31244f8bd0c-20261109T105253047679Z-286973750bc4",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/mixed_s2-a2dbb41b16e0-20261109T111013634635Z-8ec3f9b3ac6a",
+      "run_id": "mixed_s2-a2dbb41b16e0-20261109T111013634635Z-8ec3f9b3ac6a",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R5/baselines-d1f25747470e-20261109T102422395467Z-e1f00c214c0e",
+      "run_id": "baselines-d1f25747470e-20261109T102422395467Z-e1f00c214c0e",
+      "city": "NYC",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "e956ce97ed3c28c9b0c4cf2d1d76cfd66f89b98484cdd3550db05e31ddaad349",
+      "kind": "baselines",
+      "device": "cpu",
+      "sampler": null,
+      "seed": null,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R5/random_s0-86a3c4840474-20261109T102355510802Z-903e7c6b7e6d",
+      "run_id": "random_s0-86a3c4840474-20261109T102355510802Z-903e7c6b7e6d",
+      "city": "NYC",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "e956ce97ed3c28c9b0c4cf2d1d76cfd66f89b98484cdd3550db05e31ddaad349",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R5/random_s1-e1ad7598ca91-20261109T104958062444Z-5ac25ac35d0f",
+      "run_id": "random_s1-e1ad7598ca91-20261109T104958062444Z-5ac25ac35d0f",
+      "city": "NYC",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "e956ce97ed3c28c9b0c4cf2d1d76cfd66f89b98484cdd3550db05e31ddaad349",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R5/random_s2-fa2cc53bb03a-20261109T110740028686Z-c29642bd8dba",
+      "run_id": "random_s2-fa2cc53bb03a-20261109T110740028686Z-c29642bd8dba",
+      "city": "NYC",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "e956ce97ed3c28c9b0c4cf2d1d76cfd66f89b98484cdd3550db05e31ddaad349",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R5/geo_s0-a004f4612c61-20261109T102433878807Z-6f04499f3dfa",
+      "run_id": "geo_s0-a004f4612c61-20261109T102433878807Z-6f04499f3dfa",
+      "city": "NYC",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "e956ce97ed3c28c9b0c4cf2d1d76cfd66f89b98484cdd3550db05e31ddaad349",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R5/geo_s1-df021d143171-20261109T105030013466Z-0c9fccf7b354",
+      "run_id": "geo_s1-df021d143171-20261109T105030013466Z-0c9fccf7b354",
+      "city": "NYC",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "e956ce97ed3c28c9b0c4cf2d1d76cfd66f89b98484cdd3550db05e31ddaad349",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R5/geo_s2-5c7d0ccde13b-20261109T110814778008Z-2293ca885360",
+      "run_id": "geo_s2-5c7d0ccde13b-20261109T110814778008Z-2293ca885360",
+      "city": "NYC",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "e956ce97ed3c28c9b0c4cf2d1d76cfd66f89b98484cdd3550db05e31ddaad349",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R5/mixed_s0-3c22d7207ae6-20261109T102513170354Z-5f288b59967a",
+      "run_id": "mixed_s0-3c22d7207ae6-20261109T102513170354Z-5f288b59967a",
+      "city": "NYC",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "e956ce97ed3c28c9b0c4cf2d1d76cfd66f89b98484cdd3550db05e31ddaad349",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R5/mixed_s1-1651d32e181c-20261109T105118016179Z-51fc0836dcc6",
+      "run_id": "mixed_s1-1651d32e181c-20261109T105118016179Z-51fc0836dcc6",
+      "city": "NYC",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "e956ce97ed3c28c9b0c4cf2d1d76cfd66f89b98484cdd3550db05e31ddaad349",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R5/mixed_s2-894ebb84f6ee-20261109T110853081302Z-658f425941f0",
+      "run_id": "mixed_s2-894ebb84f6ee-20261109T110853081302Z-658f425941f0",
+      "city": "NYC",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "e956ce97ed3c28c9b0c4cf2d1d76cfd66f89b98484cdd3550db05e31ddaad349",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R2/baselines-de6dc3fe833b-20261109T102440316157Z-b1a7a6f396e3",
+      "run_id": "baselines-de6dc3fe833b-20261109T102440316157Z-b1a7a6f396e3",
+      "city": "TKY",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "1d325fed1a9810ac51d93472df6939d1f739465cc9e5a346ad29fa3407147361",
+      "kind": "baselines",
+      "device": "cpu",
+      "sampler": null,
+      "seed": null,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R2/random_s0-6e3a86cb7238-20261109T102838742653Z-10cbdd742a5c",
+      "run_id": "random_s0-6e3a86cb7238-20261109T102838742653Z-10cbdd742a5c",
+      "city": "TKY",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "1d325fed1a9810ac51d93472df6939d1f739465cc9e5a346ad29fa3407147361",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R2/random_s1-e056ffc1e88a-20261109T105350601766Z-6606697c291b",
+      "run_id": "random_s1-e056ffc1e88a-20261109T105350601766Z-6606697c291b",
+      "city": "TKY",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "1d325fed1a9810ac51d93472df6939d1f739465cc9e5a346ad29fa3407147361",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R2/random_s2-7dfe0ed2dfd6-20261109T111045926734Z-54aa6d628037",
+      "run_id": "random_s2-7dfe0ed2dfd6-20261109T111045926734Z-54aa6d628037",
+      "city": "TKY",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "1d325fed1a9810ac51d93472df6939d1f739465cc9e5a346ad29fa3407147361",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R2/geo_s0-daa98c32e7c1-20261109T103118951360Z-f920a7708658",
+      "run_id": "geo_s0-daa98c32e7c1-20261109T103118951360Z-f920a7708658",
+      "city": "TKY",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "1d325fed1a9810ac51d93472df6939d1f739465cc9e5a346ad29fa3407147361",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R2/geo_s1-b467d6d81383-20261109T105538762836Z-a4acbbc13f01",
+      "run_id": "geo_s1-b467d6d81383-20261109T105538762836Z-a4acbbc13f01",
+      "city": "TKY",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "1d325fed1a9810ac51d93472df6939d1f739465cc9e5a346ad29fa3407147361",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R2/geo_s2-ca00371a75ea-20261109T111217424364Z-e172dae94b95",
+      "run_id": "geo_s2-ca00371a75ea-20261109T111217424364Z-e172dae94b95",
+      "city": "TKY",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "1d325fed1a9810ac51d93472df6939d1f739465cc9e5a346ad29fa3407147361",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R2/mixed_s0-5fdddc2ca90f-20261109T103300133622Z-c8b70b2e72b9",
+      "run_id": "mixed_s0-5fdddc2ca90f-20261109T103300133622Z-c8b70b2e72b9",
+      "city": "TKY",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "1d325fed1a9810ac51d93472df6939d1f739465cc9e5a346ad29fa3407147361",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R2/mixed_s1-4fb53b1944a3-20261109T105655077512Z-221af882e694",
+      "run_id": "mixed_s1-4fb53b1944a3-20261109T105655077512Z-221af882e694",
+      "city": "TKY",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "1d325fed1a9810ac51d93472df6939d1f739465cc9e5a346ad29fa3407147361",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R2/mixed_s2-b94b8f312914-20261109T111325175501Z-79f4516cf10d",
+      "run_id": "mixed_s2-b94b8f312914-20261109T111325175501Z-79f4516cf10d",
+      "city": "TKY",
+      "radius_km": 2,
+      "split": "leave-one-out",
+      "evaluation_id": "1d325fed1a9810ac51d93472df6939d1f739465cc9e5a346ad29fa3407147361",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/baselines-d56d4229a348-20261109T102451076253Z-989130f621b1",
+      "run_id": "baselines-d56d4229a348-20261109T102451076253Z-989130f621b1",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "baselines",
+      "device": "cpu",
+      "sampler": null,
+      "seed": null,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/random_s0-029d5ff0f16a-20261109T102726038813Z-7a1b98f12656",
+      "run_id": "random_s0-029d5ff0f16a-20261109T102726038813Z-7a1b98f12656",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 0,
+      "source_checkpoint": "results/sasrec/TKY/R3/random_s0/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/TKY/R3/random_s1-14fe260f3610-20261109T102727287534Z-33a71c75b717",
+      "run_id": "random_s1-14fe260f3610-20261109T102727287534Z-33a71c75b717",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 1,
+      "source_checkpoint": "results/sasrec/TKY/R3/random_s1/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/TKY/R3/random_s2-0d81a8ea6766-20261109T102728503599Z-47ced7893127",
+      "run_id": "random_s2-0d81a8ea6766-20261109T102728503599Z-47ced7893127",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 2,
+      "source_checkpoint": "results/sasrec/TKY/R3/random_s2/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/TKY/R3/geo_s0-b61afaf66770-20261109T102729758555Z-b34977d7178b",
+      "run_id": "geo_s0-b61afaf66770-20261109T102729758555Z-b34977d7178b",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 0,
+      "source_checkpoint": "results/sasrec/TKY/R3/geo_s0/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/TKY/R3/geo_s1-447b0d7e7fe0-20261109T102730939888Z-b70d724fc14f",
+      "run_id": "geo_s1-447b0d7e7fe0-20261109T102730939888Z-b70d724fc14f",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 1,
+      "source_checkpoint": "results/sasrec/TKY/R3/geo_s1/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/TKY/R3/geo_s2-f51003be9dcc-20261109T102732250408Z-cc945ec50a64",
+      "run_id": "geo_s2-f51003be9dcc-20261109T102732250408Z-cc945ec50a64",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 2,
+      "source_checkpoint": "results/sasrec/TKY/R3/geo_s2/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/TKY/R3/mixed_s0-a6e8587735dd-20261109T102733391148Z-19c7d33edb05",
+      "run_id": "mixed_s0-a6e8587735dd-20261109T102733391148Z-19c7d33edb05",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 0,
+      "source_checkpoint": "results/sasrec/TKY/R3/mixed_s0/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/TKY/R3/mixed_s1-fa760e7b9ecb-20261109T102734627362Z-872cea0d7edc",
+      "run_id": "mixed_s1-fa760e7b9ecb-20261109T102734627362Z-872cea0d7edc",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 1,
+      "source_checkpoint": "results/sasrec/TKY/R3/mixed_s1/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/TKY/R3/mixed_s2-f9a111391bf5-20261109T102735836948Z-44545a6f5384",
+      "run_id": "mixed_s2-f9a111391bf5-20261109T102735836948Z-44545a6f5384",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 2,
+      "source_checkpoint": "results/sasrec/TKY/R3/mixed_s2/model.pt",
+      "archived_test_delta": {
+        "ndcg@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "hr@10": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        },
+        "mrr": {
+          "E1": 0.0,
+          "E2": 0.0,
+          "E3": 0.0,
+          "E4": 0.0
+        }
+      }
+    },
+    {
+      "path": "results/runs/TKY/R3/mixed_s0-09ee9d39e739-20261109T104247421657Z-99d7dab87f4a",
+      "run_id": "mixed_s0-09ee9d39e739-20261109T104247421657Z-99d7dab87f4a",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/mixed_s1-1e3ff5ff7e03-20261109T110255455586Z-551429781651",
+      "run_id": "mixed_s1-1e3ff5ff7e03-20261109T110255455586Z-551429781651",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/mixed_s2-82398bf54000-20261109T111922730108Z-8d77651f9556",
+      "run_id": "mixed_s2-82398bf54000-20261109T111922730108Z-8d77651f9556",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/mixed_s0-adf168dca197-20261109T104511553935Z-1e73efb4295d",
+      "run_id": "mixed_s0-adf168dca197-20261109T104511553935Z-1e73efb4295d",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/mixed_s1-a9a803e72536-20261109T110440522438Z-de9b453cdac5",
+      "run_id": "mixed_s1-a9a803e72536-20261109T110440522438Z-de9b453cdac5",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/mixed_s2-370751ea7626-20261109T112046960190Z-ee372641402d",
+      "run_id": "mixed_s2-370751ea7626-20261109T112046960190Z-ee372641402d",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "leave-one-out",
+      "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R5/baselines-283e79ee845d-20261109T102506460579Z-dc946555d7cf",
+      "run_id": "baselines-283e79ee845d-20261109T102506460579Z-dc946555d7cf",
+      "city": "TKY",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "38a559cb040285c363989d7093cae71127f3fd73e01e09851f77731fa3633e38",
+      "kind": "baselines",
+      "device": "cpu",
+      "sampler": null,
+      "seed": null,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R5/random_s0-f31104396689-20261109T103440966375Z-7afd62ea8525",
+      "run_id": "random_s0-f31104396689-20261109T103440966375Z-7afd62ea8525",
+      "city": "TKY",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "38a559cb040285c363989d7093cae71127f3fd73e01e09851f77731fa3633e38",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R5/random_s1-23f137374b2d-20261109T105838571951Z-ecb764aa3769",
+      "run_id": "random_s1-23f137374b2d-20261109T105838571951Z-ecb764aa3769",
+      "city": "TKY",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "38a559cb040285c363989d7093cae71127f3fd73e01e09851f77731fa3633e38",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R5/random_s2-b60e167d181b-20261109T111433688241Z-2ee5648b8c1f",
+      "run_id": "random_s2-b60e167d181b-20261109T111433688241Z-2ee5648b8c1f",
+      "city": "TKY",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "38a559cb040285c363989d7093cae71127f3fd73e01e09851f77731fa3633e38",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R5/geo_s0-2e8679641cfc-20261109T103745716219Z-49d0fa0cbc06",
+      "run_id": "geo_s0-2e8679641cfc-20261109T103745716219Z-49d0fa0cbc06",
+      "city": "TKY",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "38a559cb040285c363989d7093cae71127f3fd73e01e09851f77731fa3633e38",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R5/geo_s1-bc9ad7bc084e-20261109T110027116490Z-51bbc3d8bfc8",
+      "run_id": "geo_s1-bc9ad7bc084e-20261109T110027116490Z-51bbc3d8bfc8",
+      "city": "TKY",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "38a559cb040285c363989d7093cae71127f3fd73e01e09851f77731fa3633e38",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R5/geo_s2-e546fa052dc4-20261109T111607094593Z-57ef27b2992a",
+      "run_id": "geo_s2-e546fa052dc4-20261109T111607094593Z-57ef27b2992a",
+      "city": "TKY",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "38a559cb040285c363989d7093cae71127f3fd73e01e09851f77731fa3633e38",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R5/mixed_s0-4b870c7035f6-20261109T104010004464Z-1a64833fbbb9",
+      "run_id": "mixed_s0-4b870c7035f6-20261109T104010004464Z-1a64833fbbb9",
+      "city": "TKY",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "38a559cb040285c363989d7093cae71127f3fd73e01e09851f77731fa3633e38",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R5/mixed_s1-ce3c855b87ac-20261109T110145797092Z-46c6dd825618",
+      "run_id": "mixed_s1-ce3c855b87ac-20261109T110145797092Z-46c6dd825618",
+      "city": "TKY",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "38a559cb040285c363989d7093cae71127f3fd73e01e09851f77731fa3633e38",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R5/mixed_s2-84558c6a233f-20261109T111806227484Z-475d1e5ac55e",
+      "run_id": "mixed_s2-84558c6a233f-20261109T111806227484Z-475d1e5ac55e",
+      "city": "TKY",
+      "radius_km": 5,
+      "split": "leave-one-out",
+      "evaluation_id": "38a559cb040285c363989d7093cae71127f3fd73e01e09851f77731fa3633e38",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/baselines-aa95bb074178-20261109T102410392061Z-6e9852d51a80",
+      "run_id": "baselines-aa95bb074178-20261109T102410392061Z-6e9852d51a80",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "afd3c70f6c596e0fa23e00a5e662136ae7696163a56007acc429862e2caa7e33",
+      "kind": "baselines",
+      "device": "cpu",
+      "sampler": null,
+      "seed": null,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/random_s0-668c6541112c-20261109T102520555700Z-39590744a021",
+      "run_id": "random_s0-668c6541112c-20261109T102520555700Z-39590744a021",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "afd3c70f6c596e0fa23e00a5e662136ae7696163a56007acc429862e2caa7e33",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/random_s1-17fe157f25c6-20261109T103320860335Z-51b32ba5289b",
+      "run_id": "random_s1-17fe157f25c6-20261109T103320860335Z-51b32ba5289b",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "afd3c70f6c596e0fa23e00a5e662136ae7696163a56007acc429862e2caa7e33",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/random_s2-3b19e564c513-20261109T104124397854Z-eb0ce5616f25",
+      "run_id": "random_s2-3b19e564c513-20261109T104124397854Z-eb0ce5616f25",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "afd3c70f6c596e0fa23e00a5e662136ae7696163a56007acc429862e2caa7e33",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/geo_s0-81f580c76ade-20261109T102616682583Z-5c05ce78198f",
+      "run_id": "geo_s0-81f580c76ade-20261109T102616682583Z-5c05ce78198f",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "afd3c70f6c596e0fa23e00a5e662136ae7696163a56007acc429862e2caa7e33",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/geo_s1-47fa5119d00c-20261109T103411092298Z-1dae3a8a957a",
+      "run_id": "geo_s1-47fa5119d00c-20261109T103411092298Z-1dae3a8a957a",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "afd3c70f6c596e0fa23e00a5e662136ae7696163a56007acc429862e2caa7e33",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/geo_s2-32c4bdcb15b9-20261109T104218789156Z-078a83c3e903",
+      "run_id": "geo_s2-32c4bdcb15b9-20261109T104218789156Z-078a83c3e903",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "afd3c70f6c596e0fa23e00a5e662136ae7696163a56007acc429862e2caa7e33",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/mixed_s0-a473dcb596dd-20261109T102653024831Z-8a761511d3c4",
+      "run_id": "mixed_s0-a473dcb596dd-20261109T102653024831Z-8a761511d3c4",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "afd3c70f6c596e0fa23e00a5e662136ae7696163a56007acc429862e2caa7e33",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/mixed_s1-3452e3ab8afb-20261109T103452198289Z-0ff7db865e8c",
+      "run_id": "mixed_s1-3452e3ab8afb-20261109T103452198289Z-0ff7db865e8c",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "afd3c70f6c596e0fa23e00a5e662136ae7696163a56007acc429862e2caa7e33",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/NYC/R3/mixed_s2-01ecdabee171-20261109T104304627621Z-7b01c40f73d3",
+      "run_id": "mixed_s2-01ecdabee171-20261109T104304627621Z-7b01c40f73d3",
+      "city": "NYC",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "afd3c70f6c596e0fa23e00a5e662136ae7696163a56007acc429862e2caa7e33",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/baselines-06ce2980ffd8-20261109T102432154807Z-0a5a98f9a2f5",
+      "run_id": "baselines-06ce2980ffd8-20261109T102432154807Z-0a5a98f9a2f5",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "533299daec32c4785cb4470f85babcaec49a1ff6967435d8f5ed0f7a42209f4b",
+      "kind": "baselines",
+      "device": "cpu",
+      "sampler": null,
+      "seed": null,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/random_s0-8562721c1dcd-20261109T102732933630Z-9124e9319491",
+      "run_id": "random_s0-8562721c1dcd-20261109T102732933630Z-9124e9319491",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "533299daec32c4785cb4470f85babcaec49a1ff6967435d8f5ed0f7a42209f4b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/random_s1-d025e7c4bcf7-20261109T103552310394Z-35ebc5f04eda",
+      "run_id": "random_s1-d025e7c4bcf7-20261109T103552310394Z-35ebc5f04eda",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "533299daec32c4785cb4470f85babcaec49a1ff6967435d8f5ed0f7a42209f4b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/random_s2-b6e8fcc42d88-20261109T104346640340Z-394b511de653",
+      "run_id": "random_s2-b6e8fcc42d88-20261109T104346640340Z-394b511de653",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "533299daec32c4785cb4470f85babcaec49a1ff6967435d8f5ed0f7a42209f4b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "random",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/geo_s0-7db8330764ce-20261109T103005163509Z-fad962368ec2",
+      "run_id": "geo_s0-7db8330764ce-20261109T103005163509Z-fad962368ec2",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "533299daec32c4785cb4470f85babcaec49a1ff6967435d8f5ed0f7a42209f4b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/geo_s1-02079f14bc5e-20261109T103820172919Z-606c805602f0",
+      "run_id": "geo_s1-02079f14bc5e-20261109T103820172919Z-606c805602f0",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "533299daec32c4785cb4470f85babcaec49a1ff6967435d8f5ed0f7a42209f4b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/geo_s2-eb20b7969816-20261109T104613674470Z-2e11b56b2715",
+      "run_id": "geo_s2-eb20b7969816-20261109T104613674470Z-2e11b56b2715",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "533299daec32c4785cb4470f85babcaec49a1ff6967435d8f5ed0f7a42209f4b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "geo",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/mixed_s0-69949a0ff167-20261109T103148880722Z-18e3e0931a88",
+      "run_id": "mixed_s0-69949a0ff167-20261109T103148880722Z-18e3e0931a88",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "533299daec32c4785cb4470f85babcaec49a1ff6967435d8f5ed0f7a42209f4b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 0,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/mixed_s1-800204d364d5-20261109T104004480390Z-91e59204756d",
+      "run_id": "mixed_s1-800204d364d5-20261109T104004480390Z-91e59204756d",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "533299daec32c4785cb4470f85babcaec49a1ff6967435d8f5ed0f7a42209f4b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 1,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    },
+    {
+      "path": "results/runs/TKY/R3/mixed_s2-e8417b95ba06-20261109T104746408049Z-a73babcf5c24",
+      "run_id": "mixed_s2-e8417b95ba06-20261109T104746408049Z-a73babcf5c24",
+      "city": "TKY",
+      "radius_km": 3,
+      "split": "global-time",
+      "evaluation_id": "533299daec32c4785cb4470f85babcaec49a1ff6967435d8f5ed0f7a42209f4b",
+      "kind": "sasrec",
+      "device": "mps",
+      "sampler": "mixed",
+      "seed": 2,
+      "source_checkpoint": null,
+      "archived_test_delta": null
+    }
+  ]
+}

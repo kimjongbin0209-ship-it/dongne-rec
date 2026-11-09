@@ -2,14 +2,13 @@
 
 python -m dongne_rec.train.trainer --city NYC --sampler random --seed 0
 valid 주 지표(E4 NDCG@10)로 early stopping 후 최고 체크포인트를 test로 평가해요.
-결과: results/sasrec/{city}/R{r}/{sampler}_s{seed}/
-  config.json, train_log.csv, per_query.parquet (test), summary.json, model.pt
+결과: results/runs/{city}/R{r}/{run_id}/
+  metadata.json, config.json, train_log.csv, per_query.parquet (test), summary.json, model.pt
 """
 from __future__ import annotations
 
 import argparse
 import copy
-import json
 import random
 import time
 from pathlib import Path
@@ -20,12 +19,14 @@ import torch
 import torch.nn.functional as F
 import yaml
 
-from dongne_rec.config import load_config
-from dongne_rec.data.geo import GeoIndex, load_geo_index
-from dongne_rec.data.split import Split, load_split
+from dongne_rec.config import load_config, resolve_radius
+from dongne_rec.data.geo import GeoIndex
+from dongne_rec.data.split import Split
 from dongne_rec.eval import report
-from dongne_rec.eval.protocols import PROTOCOLS, evaluate, load_or_sample_candidates
+from dongne_rec.eval.protocols import PROTOCOLS, evaluate
+from dongne_rec.experiments import load_evaluation, new_run
 from dongne_rec.models.sasrec import SASRec, SASRecScorer, pad_left
+from dongne_rec.storage import publish_directory, write_json
 from dongne_rec.train.samplers import SAMPLER_IDS, GeoSampler, MixedSampler, NegativeSampler, RandomSampler, user_item_matrix
 
 
@@ -87,7 +88,7 @@ def model_name(sampler: str) -> str:
 
 
 def run_dir(ecfg: dict, city: str, radius: float, sampler: str, seed: int, tag: str | None = None) -> Path:
-    """tag가 있으면 튜닝 실행이라 results/tuning/ 아래에 둬서 비교 표(make compare)에서 빠지게 해요."""
+    """기존 형식으로 저장된 실행의 경로."""
     if tag:
         return Path(ecfg["results_dir"]) / "tuning" / "sasrec" / city / f"R{radius:g}" / f"{tag}_{sampler}_s{seed}"
     return Path(ecfg["results_dir"]) / "sasrec" / city / f"R{radius:g}" / f"{sampler}_s{seed}"
@@ -108,20 +109,25 @@ def apply_overrides(cfg: dict, assignments: list[str]) -> dict:
     return cfg
 
 
-def train_run(cfg: dict, ecfg: dict, scfg: dict, sampler_name: str, seed: int, tag: str | None = None) -> dict:
+def train_run(
+    cfg: dict, ecfg: dict, scfg: dict, sampler_name: str, seed: int, tag: str | None = None,
+    *, radius_km: float | None = None,
+) -> dict:
     mcfg, tcfg = scfg["model"], scfg["train"]
-    radius = cfg["geo"]["radius_km"]
+    radius = resolve_radius(cfg, radius_km)
+    tag = tag or None
     ks, metric, primary = tuple(ecfg["ks"]), ecfg["primary"]["metric"], ecfg["primary"]["protocol"]
     set_seed(seed)
 
-    split = load_split(cfg)
-    geo = load_geo_index(cfg, radius)
-    cands = load_or_sample_candidates(cfg, split, geo, ecfg["n_sampled_negatives"], ecfg["seed"])
+    split, geo, cands, evaluation = load_evaluation(cfg, ecfg, radius)
     inputs, positives, users = make_windows(split.train, mcfg["max_len"], tcfg["windows"] == "all")
     rng = np.random.default_rng(seed)
     sampler = make_sampler(sampler_name, split, geo, rng, tcfg)
 
     device = resolve_device(tcfg["device"])
+    out, metadata = new_run(
+        "sasrec", cfg, ecfg, evaluation, scfg=scfg, sampler=sampler_name, seed=seed, tag=tag, device=str(device),
+    )
     model = SASRec(split.n_items, **mcfg).to(device)
     opt = torch.optim.Adam(model.parameters(), lr=tcfg["lr"], betas=(0.9, 0.98))
     scorer = SASRecScorer(model, device, model_name(sampler_name))
@@ -168,21 +174,22 @@ def train_run(cfg: dict, ecfg: dict, scfg: dict, sampler_name: str, seed: int, t
     per_query = report.with_meta(per_query, split.test)
     test_means = {m: per_query.groupby("protocol")[m].mean()[list(PROTOCOLS)].to_dict() for m in (*(f"{x}@{k}" for x in ("ndcg", "hr") for k in ks), "mrr")}
 
-    out = run_dir(ecfg, cfg["city"], radius, sampler_name, seed, tag)
-    out.mkdir(parents=True, exist_ok=True)
     summary = {
         "city": cfg["city"], "radius_km": radius, "model": scorer.name, "sampler": sampler_name, "seed": seed, "tag": tag,
+        "run_id": metadata["run_id"], "experiment_id": metadata["experiment_id"],
         "device": str(device), "best_epoch": best_epoch, f"best_valid_{primary}_{metric}": best,
         "train_sec": train_sec, "test": test_means,
     }
-    (out / "config.json").write_text(json.dumps({"model": mcfg, "train": tcfg, "eval": ecfg}, ensure_ascii=False, indent=2), encoding="utf-8")
-    (out / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
-    pd.DataFrame(log).to_csv(out / "train_log.csv", index=False)
-    per_query.to_parquet(out / "per_query.parquet", index=False)
-    torch.save(best_state, out / "model.pt")
+    with publish_directory(out) as staging:
+        write_json(staging / "config.json", {"model": mcfg, "train": tcfg, "eval": ecfg})
+        write_json(staging / "summary.json", summary)
+        write_json(staging / "metadata.json", metadata)
+        pd.DataFrame(log).to_csv(staging / "train_log.csv", index=False)
+        per_query.to_parquet(staging / "per_query.parquet", index=False)
+        torch.save(best_state, staging / "model.pt")
     print(f"[train] best epoch {best_epoch} ({train_sec:.0f}s) test {metric} "
           + " ".join(f"{p}={test_means[metric][p]:.4f}" for p in PROTOCOLS) + f" → {out}")
-    return summary
+    return {**summary, "run_dir": str(out)}
 
 
 def main() -> None:
@@ -191,14 +198,18 @@ def main() -> None:
     parser.add_argument("--eval-config", default="configs/eval.yaml")
     parser.add_argument("--sasrec-config", default="configs/sasrec.yaml")
     parser.add_argument("--city")
+    parser.add_argument("--radius-km", type=float)
     parser.add_argument("--sampler", default="random", choices=list(SAMPLER_IDS))
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--set", action="append", default=[], metavar="KEY=VALUE", help="sasrec config 덮어쓰기 (예: model.dropout=0.5)")
-    parser.add_argument("--tag", help="튜닝 실행 이름. 주면 results/tuning/ 아래에 저장")
+    parser.add_argument("--tag", help="튜닝 실행의 이름. 기본 비교 목록에서 제외하며 --run으로 선택할 수 있습니다.")
     args = parser.parse_args()
 
     scfg = apply_overrides(load_config(args.sasrec_config), args.set)
-    train_run(load_config(args.config, city=args.city), load_config(args.eval_config), scfg, args.sampler, args.seed, args.tag)
+    train_run(
+        load_config(args.config, city=args.city), load_config(args.eval_config), scfg, args.sampler, args.seed, args.tag,
+        radius_km=args.radius_km,
+    )
 
 
 if __name__ == "__main__":

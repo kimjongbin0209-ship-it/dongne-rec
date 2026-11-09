@@ -1,0 +1,419 @@
+{
+  "selection_stage": "valid",
+  "metric": "E4 NDCG@10",
+  "radius_km": 3,
+  "rrf_offset": 60,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "device": "mps",
+  "stage3_inputs": "results/reports/sensitivity/stage3-20261109T112330626325Z-6fd4b60917f0/inputs.json",
+  "groups": [
+    {
+      "city": "NYC",
+      "split": "leave-one-out",
+      "evaluation": {
+        "schema_version": 1,
+        "city": "NYC",
+        "radius_km": 3.0,
+        "data_id": "ec533a0ac791f7af7080e497795369b6e7462a48a1f5f8b7b56b54a6b9c01deb",
+        "split_id": "54a2d293932a12e837dc6e11e97e2b3d00fbc7d7144075641e6e08af9385a54d",
+        "candidate_cache_key": "1370c6ee40e3d282fbd3376ff13cb990c92d7d6da85c538d2ceb330b89086b98",
+        "ks": [
+          10
+        ],
+        "evaluation_id": "96eda060231cff3484d1a5bd2f6cff983b03293a06d92930a835a1914f783050",
+        "processed_files": {
+          "interactions.parquet": "5da80ff297f8c63543e67e662ea802064f8e0391c97c7d4f4f66100dbc767586",
+          "items.parquet": "aa8fc58e94986bc0baee20db1f080e0579815f9f22cde9be3bfe7ee202dd3d6c"
+        },
+        "split_strategy": "leave-one-out"
+      },
+      "valid_queries": 1083,
+      "weights": {
+        "S0": {
+          "pf_visited": 0.9,
+          "pf_unvisited": 0.2,
+          "valid_ndcg@10": 0.20665925057561438
+        },
+        "S2": {
+          "pf_visited": 0.9,
+          "pf_unvisited": 0.2,
+          "valid_ndcg@10": 0.20662089806669273
+        }
+      },
+      "baseline": "results/runs/NYC/R3/baselines-bb311d029fa1-20261109T102418891786Z-7fa04b6b4ba9",
+      "checkpoints": [
+        {
+          "variant": "S0",
+          "seed": 0,
+          "path": "results/runs/NYC/R3/random_s0-799cce541fa2-20261109T102719039772Z-cbea919e472c",
+          "run_id": "random_s0-799cce541fa2-20261109T102719039772Z-cbea919e472c",
+          "sha256": "ae18bc37c4d7f38d50fb46bbbab07982f492242420650bae441623f1edded636"
+        },
+        {
+          "variant": "S0",
+          "seed": 1,
+          "path": "results/runs/NYC/R3/random_s1-ba9552e0b5c7-20261109T102719729191Z-4881a0ffd16f",
+          "run_id": "random_s1-ba9552e0b5c7-20261109T102719729191Z-4881a0ffd16f",
+          "sha256": "f4348f84aa310da4a6cd2fadcb162d3bc5c1d242d41004c9d6de30bf9849729a"
+        },
+        {
+          "variant": "S0",
+          "seed": 2,
+          "path": "results/runs/NYC/R3/random_s2-91e4d664b639-20261109T102720391658Z-48e632fc570a",
+          "run_id": "random_s2-91e4d664b639-20261109T102720391658Z-48e632fc570a",
+          "sha256": "8727e10ffd683c63372e95e7458d55bc1ba1625e726ed134c94de1780c4fa8fd"
+        },
+        {
+          "variant": "S2",
+          "seed": 0,
+          "path": "results/runs/NYC/R3/mixed_s0-2170879ce81e-20261109T102722951899Z-d73016762b23",
+          "run_id": "mixed_s0-2170879ce81e-20261109T102722951899Z-d73016762b23",
+          "sha256": "26abd9f64070901164b63344ff483457ca476191e37def77645a52c308564a91"
+        },
+        {
+          "variant": "S2",
+          "seed": 1,
+          "path": "results/runs/NYC/R3/mixed_s1-d90db5860fd8-20261109T102723591609Z-289a9d2da2c4",
+          "run_id": "mixed_s1-d90db5860fd8-20261109T102723591609Z-289a9d2da2c4",
+          "sha256": "10bc52fe9d6dbacd3aa3038f091c23ff879c7e7ee0c5cf4378b81fe65730bb09"
+        },
+        {
+          "variant": "S2",
+          "seed": 2,
+          "path": "results/runs/NYC/R3/mixed_s2-e74e75baed01-20261109T102724291557Z-64b59efae365",
+          "run_id": "mixed_s2-e74e75baed01-20261109T102724291557Z-64b59efae365",
+          "sha256": "b02f64e4abd08639678bf944bf1e51eef379af1d3f0a0ca75517205381f26835"
+        }
+      ]
+    },
+    {
+      "city": "TKY",
+      "split": "leave-one-out",
+      "evaluation": {
+        "schema_version": 1,
+        "city": "TKY",
+        "radius_km": 3.0,
+        "data_id": "0ce5378ce99821d3994e794130763e4c1628d298f479c514f3bcb63dfccb0e28",
+        "split_id": "d966ad5326adc08ca9b521413268b6901bb1e5c97007589dc133da46d5e029af",
+        "candidate_cache_key": "a342ac3d9e5f2448ee3b532b685fc097f04a137d06c380335a4aee7a563c915b",
+        "ks": [
+          10
+        ],
+        "evaluation_id": "7b0c17d9c2d9411b96e6b79db6a49c9c627af794953f3f744a63dd199a325e4f",
+        "processed_files": {
+          "interactions.parquet": "566e5933f6eae3de1ad2e6d471f8044ff30dd4a5dd806b40e5f60f93c980dd7e",
+          "items.parquet": "ad39b037026a9e0c23682103df01b063c09c7ecb1659010ac15d4ba635406923"
+        },
+        "split_strategy": "leave-one-out"
+      },
+      "valid_queries": 2293,
+      "weights": {
+        "S0": {
+          "pf_visited": 0.7,
+          "pf_unvisited": 0.7,
+          "valid_ndcg@10": 0.22546942717627952
+        },
+        "S2": {
+          "pf_visited": 0.8,
+          "pf_unvisited": 0.4,
+          "valid_ndcg@10": 0.22576146489844437
+        }
+      },
+      "baseline": "results/runs/TKY/R3/baselines-d56d4229a348-20261109T102451076253Z-989130f621b1",
+      "checkpoints": [
+        {
+          "variant": "S0",
+          "seed": 0,
+          "path": "results/runs/TKY/R3/random_s0-029d5ff0f16a-20261109T102726038813Z-7a1b98f12656",
+          "run_id": "random_s0-029d5ff0f16a-20261109T102726038813Z-7a1b98f12656",
+          "sha256": "016e67d9fad21c3e9c6d3ef10a7070f8f42e4fd8e04ccf65af4f586e69ed0a90"
+        },
+        {
+          "variant": "S0",
+          "seed": 1,
+          "path": "results/runs/TKY/R3/random_s1-14fe260f3610-20261109T102727287534Z-33a71c75b717",
+          "run_id": "random_s1-14fe260f3610-20261109T102727287534Z-33a71c75b717",
+          "sha256": "352f27621ebda5d8f27a31562521b70e93f998d77d63bb7fa65c8491a3bbfbf4"
+        },
+        {
+          "variant": "S0",
+          "seed": 2,
+          "path": "results/runs/TKY/R3/random_s2-0d81a8ea6766-20261109T102728503599Z-47ced7893127",
+          "run_id": "random_s2-0d81a8ea6766-20261109T102728503599Z-47ced7893127",
+          "sha256": "f22256028655c0b10414183960ad6d0dd5caf2070fb0c60f93b3b9d25c20b680"
+        },
+        {
+          "variant": "S2",
+          "seed": 0,
+          "path": "results/runs/TKY/R3/mixed_s0-a6e8587735dd-20261109T102733391148Z-19c7d33edb05",
+          "run_id": "mixed_s0-a6e8587735dd-20261109T102733391148Z-19c7d33edb05",
+          "sha256": "d4addbf6dfdb9441fc0e473d9fc66971592b4348eaa8ca15ff5f3641eb46f20f"
+        },
+        {
+          "variant": "S2",
+          "seed": 1,
+          "path": "results/runs/TKY/R3/mixed_s1-fa760e7b9ecb-20261109T102734627362Z-872cea0d7edc",
+          "run_id": "mixed_s1-fa760e7b9ecb-20261109T102734627362Z-872cea0d7edc",
+          "sha256": "ec7fb2d14820c2e6efc270df372bcbc8f8402cc23dce033e4183574bd04d8aca"
+        },
+        {
+          "variant": "S2",
+          "seed": 2,
+          "path": "results/runs/TKY/R3/mixed_s2-f9a111391bf5-20261109T102735836948Z-44545a6f5384",
+          "run_id": "mixed_s2-f9a111391bf5-20261109T102735836948Z-44545a6f5384",
+          "sha256": "9b69cdc584a7e2c0996c3723ee005b27b773f39027868c5773036b69590130d4"
+        }
+      ]
+    },
+    {
+      "city": "NYC",
+      "split": "global-time",
+      "evaluation": {
+        "schema_version": 1,
+        "city": "NYC",
+        "radius_km": 3.0,
+        "data_id": "820164a66222aa1f2e7f1fa456e3e29da0e95de779befa535dc871971d0afa15",
+        "split_id": "29ad02bfa83845a53dd979ab566eba5bf4108005e043777b886fdbece3cb11b9",
+        "candidate_cache_key": "38645702398a4dff6f1c527986110d4781208dc9b27b019cca9ef6bea030ec88",
+        "ks": [
+          10
+        ],
+        "evaluation_id": "afd3c70f6c596e0fa23e00a5e662136ae7696163a56007acc429862e2caa7e33",
+        "processed_files": {
+          "interactions.parquet": "1f7901cdbea9c0c43134f838572434648b3ffa677e2f581c9ac180a347267f17",
+          "items.parquet": "23b94b1c467ac5671bce1a205e177308bfa1469e7fe4720a4af70bf507d95b3d",
+          "holdout.parquet": "7d96e079fccbea45dfdf9e12a46e4f41c9dc85f433d1863a6609274632614015"
+        },
+        "split_strategy": "global-time",
+        "split_cutoffs": [
+          "2012-12-01T00:00:00+00:00",
+          "2013-01-01T00:00:00+00:00"
+        ]
+      },
+      "valid_queries": 836,
+      "weights": {
+        "S0": {
+          "pf_visited": 1.0,
+          "pf_unvisited": 0.7,
+          "valid_ndcg@10": 0.10646412705880987
+        },
+        "S2": {
+          "pf_visited": 1.0,
+          "pf_unvisited": 1.0,
+          "valid_ndcg@10": 0.106463142325247
+        }
+      },
+      "baseline": "results/runs/NYC/R3/baselines-aa95bb074178-20261109T102410392061Z-6e9852d51a80",
+      "checkpoints": [
+        {
+          "variant": "S0",
+          "seed": 0,
+          "path": "results/runs/NYC/R3/random_s0-668c6541112c-20261109T102520555700Z-39590744a021",
+          "run_id": "random_s0-668c6541112c-20261109T102520555700Z-39590744a021",
+          "sha256": "0a14313ed07e36b9824e4456c3ef4763f1c40ba66fd5d9ff3fa9a1aa6ac17e07"
+        },
+        {
+          "variant": "S0",
+          "seed": 1,
+          "path": "results/runs/NYC/R3/random_s1-17fe157f25c6-20261109T103320860335Z-51b32ba5289b",
+          "run_id": "random_s1-17fe157f25c6-20261109T103320860335Z-51b32ba5289b",
+          "sha256": "4a9d948169f7cab390bdb990f46bd74b4f24e6c9351ff8b34262c9e0108ac7ac"
+        },
+        {
+          "variant": "S0",
+          "seed": 2,
+          "path": "results/runs/NYC/R3/random_s2-3b19e564c513-20261109T104124397854Z-eb0ce5616f25",
+          "run_id": "random_s2-3b19e564c513-20261109T104124397854Z-eb0ce5616f25",
+          "sha256": "7a211d22f4561cc18275be4941a8ade9cf494f9bae7ae956887f7c66c26c6901"
+        },
+        {
+          "variant": "S2",
+          "seed": 0,
+          "path": "results/runs/NYC/R3/mixed_s0-a473dcb596dd-20261109T102653024831Z-8a761511d3c4",
+          "run_id": "mixed_s0-a473dcb596dd-20261109T102653024831Z-8a761511d3c4",
+          "sha256": "df2fc2b93e43031b2814cabe320d634c29dc7e193df98ee8fa8b5ec70abeda9f"
+        },
+        {
+          "variant": "S2",
+          "seed": 1,
+          "path": "results/runs/NYC/R3/mixed_s1-3452e3ab8afb-20261109T103452198289Z-0ff7db865e8c",
+          "run_id": "mixed_s1-3452e3ab8afb-20261109T103452198289Z-0ff7db865e8c",
+          "sha256": "6f42f912a8fd2969009b518e4b75cbfd8ef0f62e57aa66424ad6081aab214856"
+        },
+        {
+          "variant": "S2",
+          "seed": 2,
+          "path": "results/runs/NYC/R3/mixed_s2-01ecdabee171-20261109T104304627621Z-7b01c40f73d3",
+          "run_id": "mixed_s2-01ecdabee171-20261109T104304627621Z-7b01c40f73d3",
+          "sha256": "46a1c810024a30339745cc57aee50deaa26c65e0a07cac8e52895f1091a8d13f"
+        }
+      ]
+    },
+    {
+      "city": "TKY",
+      "split": "global-time",
+      "evaluation": {
+        "schema_version": 1,
+        "city": "TKY",
+        "radius_km": 3.0,
+        "data_id": "f53877442df6e9fa047b4a1476d48f500541a4a5dfad4cb1d98bce696b312d73",
+        "split_id": "745471c7268c12a45fe74c48032c19341f7ef3654ca1066f07ea80d436438df8",
+        "candidate_cache_key": "7ac45f0ae8ee8554912d38845b97a45238030235dcac1340d6b1643a50940440",
+        "ks": [
+          10
+        ],
+        "evaluation_id": "533299daec32c4785cb4470f85babcaec49a1ff6967435d8f5ed0f7a42209f4b",
+        "processed_files": {
+          "interactions.parquet": "15307fc69084916797362ac5b2f887d178ca9df6fa473e02d3079b29bbc41492",
+          "items.parquet": "48fc64a0a160c17b4ddc41872621a26484bf42242806f162cf01619126a90fb1",
+          "holdout.parquet": "31927d9c40205a7029a8bd2f4aca06780d7a54e852d90941f41e28ed72984e04"
+        },
+        "split_strategy": "global-time",
+        "split_cutoffs": [
+          "2012-12-01T00:00:00+00:00",
+          "2013-01-01T00:00:00+00:00"
+        ]
+      },
+      "valid_queries": 2022,
+      "weights": {
+        "S0": {
+          "pf_visited": 0.9,
+          "pf_unvisited": 0.7,
+          "valid_ndcg@10": 0.12571124226583555
+        },
+        "S2": {
+          "pf_visited": 0.9,
+          "pf_unvisited": 0.3,
+          "valid_ndcg@10": 0.12641518243599498
+        }
+      },
+      "baseline": "results/runs/TKY/R3/baselines-06ce2980ffd8-20261109T102432154807Z-0a5a98f9a2f5",
+      "checkpoints": [
+        {
+          "variant": "S0",
+          "seed": 0,
+          "path": "results/runs/TKY/R3/random_s0-8562721c1dcd-20261109T102732933630Z-9124e9319491",
+          "run_id": "random_s0-8562721c1dcd-20261109T102732933630Z-9124e9319491",
+          "sha256": "cd050d73e1af38d3ce6836b52ee6e317e5c4d99fb5a405624654f37c54a90dcf"
+        },
+        {
+          "variant": "S0",
+          "seed": 1,
+          "path": "results/runs/TKY/R3/random_s1-d025e7c4bcf7-20261109T103552310394Z-35ebc5f04eda",
+          "run_id": "random_s1-d025e7c4bcf7-20261109T103552310394Z-35ebc5f04eda",
+          "sha256": "a0ce1ebbfd78682a8b9af5f979047714e3ed81b1bdb53221a1082169b70b5317"
+        },
+        {
+          "variant": "S0",
+          "seed": 2,
+          "path": "results/runs/TKY/R3/random_s2-b6e8fcc42d88-20261109T104346640340Z-394b511de653",
+          "run_id": "random_s2-b6e8fcc42d88-20261109T104346640340Z-394b511de653",
+          "sha256": "799b7ab87f75a43a995ecce0e850138f212e08320029667a1fed7c6be0a4ac71"
+        },
+        {
+          "variant": "S2",
+          "seed": 0,
+          "path": "results/runs/TKY/R3/mixed_s0-69949a0ff167-20261109T103148880722Z-18e3e0931a88",
+          "run_id": "mixed_s0-69949a0ff167-20261109T103148880722Z-18e3e0931a88",
+          "sha256": "86891ac2984339a8235dfecf25909cf0ff026a4837aa509ae4d017c6e9290af3"
+        },
+        {
+          "variant": "S2",
+          "seed": 1,
+          "path": "results/runs/TKY/R3/mixed_s1-800204d364d5-20261109T104004480390Z-91e59204756d",
+          "run_id": "mixed_s1-800204d364d5-20261109T104004480390Z-91e59204756d",
+          "sha256": "9f4ca7c1b1f825fbd819803745a48c73569456537ce63fdba7729d04d08c27be"
+        },
+        {
+          "variant": "S2",
+          "seed": 2,
+          "path": "results/runs/TKY/R3/mixed_s2-e8417b95ba06-20261109T104746408049Z-a73babcf5c24",
+          "run_id": "mixed_s2-e8417b95ba06-20261109T104746408049Z-a73babcf5c24",
+          "sha256": "d9cd09de708e08324d6aec30976d8bde97cde654f2e693b91fbb6d83b0d01883"
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "python": "3.12.12",
+    "python_build": [
+      "main",
+      "Oct 22 2025 23:34:53"
+    ],
+    "platform": "macOS-27.2-arm64-arm-64bit",
+    "architecture": "arm64",
+    "cpu": "Apple M4 Pro",
+    "logical_cpus": 12,
+    "packages": {
+      "annotated-doc": "0.0.5",
+      "annotated-types": "0.8.0",
+      "anyio": "4.15.1",
+      "certifi": "2026.10.23",
+      "click": "8.5.0",
+      "cloudpickle": "3.1.2",
+      "contourpy": "1.4.0",
+      "cycler": "0.12.1",
+      "dongne-rec": "0.1.0",
+      "faiss-cpu": "1.15.1",
+      "fastapi": "0.162.0",
+      "filelock": "4.2.5",
+      "flatbuffers": "25.12.19",
+      "fonttools": "4.68.0",
+      "fsspec": "2026.9.0",
+      "h11": "0.16.0",
+      "httpcore": "1.0.9",
+      "httpx": "0.28.1",
+      "idna": "3.20",
+      "iniconfig": "2.3.1",
+      "Jinja2": "3.1.6",
+      "joblib": "1.6.0",
+      "kiwisolver": "1.5.1",
+      "MarkupSafe": "3.0.4",
+      "matplotlib": "3.11.2",
+      "ml_dtypes": "0.6.0",
+      "mpmath": "1.3.0",
+      "narwhals": "2.28.0",
+      "networkx": "3.7",
+      "numpy": "2.5.4",
+      "onnx": "1.23.2",
+      "onnx-ir": "1.1.0",
+      "onnxruntime": "1.31.1",
+      "onnxscript": "0.7.2",
+      "opentelemetry-api": "1.45.2",
+      "packaging": "26.3",
+      "pandas": "3.1.0",
+      "pillow": "13.0.0",
+      "pip": "26.2.2",
+      "pluggy": "1.7.0",
+      "protobuf": "7.36.2",
+      "pyarrow": "26.0.0",
+      "pydantic": "2.14.2",
+      "pydantic_core": "2.50.2",
+      "Pygments": "2.21.0",
+      "pyparsing": "3.3.3",
+      "pytest": "9.2.0",
+      "python-dateutil": "3.0.0",
+      "PyYAML": "6.0.3",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "setuptools": "84.2.1",
+      "six": "1.17.0",
+      "starlette": "1.10.0",
+      "sympy": "1.14.0",
+      "threadpoolctl": "3.7.0",
+      "torch": "2.15.0",
+      "typing-inspection": "0.4.4",
+      "typing_extensions": "4.16.0",
+      "tzdata": "2026.6",
+      "uvicorn": "0.54.0"
+    }
+  },
+  "git": {
+    "commit": "95d158d508b0791e00dcf9a1e7b402624a2b7db2",
+    "dirty": true
+  }
+}
